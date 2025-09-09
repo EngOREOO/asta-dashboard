@@ -1,0 +1,254 @@
+/* External Font Imports */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+@import url('https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css');
+
+/* Arabic Fonts - GE */
+@font-face {
+  font-family: "GE";
+  src: url("/fonts/arabic/GE_DINAR Font/GE_Dinar_Two_Light (1).otf") format("opentype");
+  font-style: normal;
+  font-display: swap;
+}
+
+/* English Fonts - Optima */
+@font-face {
+  font-family: 'Optima';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/english/optima/Optima Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Optima';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/english/optima/OPTIMA_B.TTF') format('truetype');
+}
+
+@font-face {
+  font-family: 'Optima';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/english/optima/Optima_Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Optima';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/english/optima/OPTIMA.TTF') format('truetype');
+}
+
+/* Tabler Icons Font */
+@font-face {
+  font-family: 'tabler-icons';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/tabler/tabler-icons.woff2') format('woff2'),
+       url('/fonts/tabler/tabler-icons.woff') format('woff'),
+       url('/fonts/tabler/tabler-icons.ttf') format('truetype');
+}
+
+/* Tabler Icons Base Styles */
+.ti {
+  font-family: 'tabler-icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: middle;
+  font-size: 1.25rem;
+  display: inline-block;
+  
+  /* Better Font Rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* Custom Icon Utilities */
+.icon-sm { font-size: 0.875rem; }
+.icon-md { font-size: 1rem; }
+.icon-lg { font-size: 1.25rem; }
+.icon-xl { font-size: 1.5rem; }
+.icon-2xl { font-size: 2rem; }
+.icon-3xl { font-size: 3rem; }
+
+/* Icon Colors */
+.icon-primary { color: #6366f1; }
+.icon-secondary { color: #6b7280; }
+.icon-success { color: #10b981; }
+.icon-warning { color: #f59e0b; }
+.icon-danger { color: #ef4444; }
+.icon-info { color: #3b82f6; }
+.icon-white { color: #ffffff; }
+.icon-gray { color: #6b7280; }
+.icon-dark { color: #1f2937; }
+
+/* Font Family Utilities */
+.font-arabic { 
+  font-family: "GE", 'Arial', sans-serif; 
+}
+
+.font-english { 
+  font-family: 'Optima', 'Arial', sans-serif; 
+}
+
+.font-icons { 
+  font-family: 'tabler-icons', 'FontAwesome', sans-serif; 
+}
+
+/* Default Font Stack */
+body {
+  font-family: "GE", 'Optima', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  font-family: "GE", 'Arial', sans-serif;
+}
+
+/* LTR Support for English */
+[dir="ltr"] {
+  font-family: 'Optima', 'Arial', sans-serif;
+}
+
+/* Special styling for Arabic email text */
+.email-label-arabic {
+  font-family: inherit !important; /* Use default font family like rest of the site */
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.025em;
+}
+
+/* Special styling for email content (actual email addresses) */
+.email-content {
+  font-family: 'Arial', sans-serif !important;
+  font-weight: 500;
+  color: #1f2937;
+  letter-spacing: 0.05em;
+  font-size: 0.9em;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Table styling improvements */
+.admin-table th {
+  text-align: center !important; /* Center all table headers */
+}
+
+/* Text direction classes */
+.text-ltr {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.text-rtl {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Header icon spacing - increased spacing between icons and text */
+.header-icon-container {
+  margin-right: 3rem !important; /* mr-12 equivalent - increased spacing between icon and text */
+}
+
+/* Dashboard size reduction - make dashboard 15% smaller */
+.dashboard-container {
+  transform: scale(0.85);
+  transform-origin: top center;
+}
+
+/* Dashboard font size reduction - make fonts 16% smaller */
+.dashboard-container * {
+  font-size: 0.84em !important; /* 16% smaller */
+}
+
+/* Fix table layout and scrolling */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.table-responsive table {
+  min-width: 100%;
+  width: max-content;
+}
+
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-responsive th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.table-responsive tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Fix table width and ensure proper scrolling */
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 800px; /* Ensure minimum width for proper display */
+  border-collapse: collapse;
+}
+
+/* Mobile responsiveness for tables */
+@media (max-width: 768px) {
+  .admin-table-container {
+    font-size: 0.875rem;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .admin-table {
+    min-width: 600px;
+  }
+}
+
+/* Ensure proper scrolling on all devices */
+.admin-table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.admin-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.admin-table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.admin-table-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

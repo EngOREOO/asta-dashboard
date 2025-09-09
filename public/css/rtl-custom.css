@@ -1,0 +1,210 @@
+/* Custom RTL Styles for Dashboard */
+
+/* Fix text alignment for RTL */
+body[dir="rtl"] {
+  text-align: right;
+}
+
+/* Fix button groups alignment */
+body[dir="rtl"] .btn-group {
+  direction: ltr;
+}
+
+body[dir="rtl"] .btn-group .btn {
+  direction: rtl;
+}
+
+/* Fix table alignment */
+body[dir="rtl"] .table th,
+body[dir="rtl"] .table td {
+  text-align: right;
+}
+
+body[dir="rtl"] .table th:first-child,
+body[dir="rtl"] .table td:first-child {
+  text-align: right;
+}
+
+/* Fix form controls */
+body[dir="rtl"] .form-control,
+body[dir="rtl"] .form-select {
+  text-align: right;
+}
+
+/* Fix input groups */
+body[dir="rtl"] .input-group-text {
+  border-left: var(--bs-border-width) solid var(--bs-border-color);
+  border-right: 0;
+}
+
+/* Fix badges and labels */
+body[dir="rtl"] .badge {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Fix dropdown menus */
+body[dir="rtl"] .dropdown-menu {
+  text-align: right;
+}
+
+/* Fix card headers */
+body[dir="rtl"] .card-header {
+  text-align: right;
+}
+
+/* Fix navigation */
+body[dir="rtl"] .nav-link {
+  text-align: right;
+}
+
+/* Fix breadcrumbs */
+body[dir="rtl"] .breadcrumb {
+  direction: rtl;
+}
+
+body[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+  float: right;
+  padding-left: 0;
+  padding-right: var(--bs-breadcrumb-item-padding-x);
+  content: var(--bs-breadcrumb-divider, "/");
+}
+
+/* Fix alerts */
+body[dir="rtl"] .alert {
+  text-align: right;
+}
+
+/* Fix modals */
+body[dir="rtl"] .modal-header {
+  text-align: right;
+}
+
+body[dir="rtl"] .modal-body {
+  text-align: right;
+}
+
+body[dir="rtl"] .modal-footer {
+  text-align: left; /* Keep buttons left-aligned for better UX */
+}
+
+/* Fix DataTables */
+body[dir="rtl"] .dataTables_wrapper .dataTables_length,
+body[dir="rtl"] .dataTables_wrapper .dataTables_filter,
+body[dir="rtl"] .dataTables_wrapper .dataTables_info,
+body[dir="rtl"] .dataTables_wrapper .dataTables_paginate {
+  text-align: right;
+}
+
+/* Fix pagination */
+body[dir="rtl"] .pagination {
+  direction: ltr;
+}
+
+/* Fix progress bars */
+body[dir="rtl"] .progress {
+  direction: ltr;
+}
+
+/* Fix avatars in lists */
+body[dir="rtl"] .avatar {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* Fix list group */
+body[dir="rtl"] .list-group-item {
+  text-align: right;
+}
+
+/* Fix card titles and text */
+body[dir="rtl"] .card-title,
+body[dir="rtl"] .card-text {
+  text-align: right;
+}
+
+/* Fix statistics cards */
+body[dir="rtl"] .card-body.text-center {
+  text-align: center !important;
+}
+
+/* Fix menu items */
+body[dir="rtl"] .menu-link {
+  text-align: right;
+}
+
+/* Fix search input */
+body[dir="rtl"] .navbar-search input {
+  text-align: right;
+}
+
+/* Fix action buttons */
+body[dir="rtl"] .btn-group-sm .btn {
+  direction: ltr;
+}
+
+/* Fix icons in buttons */
+body[dir="rtl"] .btn i {
+  margin-left: 0.25rem;
+  margin-right: 0;
+}
+
+body[dir="rtl"] .btn i.me-1,
+body[dir="rtl"] .btn i.me-2 {
+  margin-left: 0.25rem;
+  margin-right: 0;
+}
+
+body[dir="rtl"] .btn i.ms-1,
+body[dir="rtl"] .btn i.ms-2 {
+  margin-right: 0.25rem;
+  margin-left: 0;
+}
+
+/* Fix accordion */
+body[dir="rtl"] .accordion-button {
+  text-align: right;
+}
+
+/* Fix quiz question styling */
+body[dir="rtl"] .question-content {
+  text-align: right;
+}
+
+body[dir="rtl"] .answer-option {
+  text-align: right;
+}
+
+/* Fix form labels */
+body[dir="rtl"] .form-label {
+  text-align: right;
+  display: block;
+}
+
+/* Fix checkbox and radio alignment */
+body[dir="rtl"] .form-check {
+  text-align: right;
+}
+
+body[dir="rtl"] .form-check-input {
+  float: right;
+  margin-right: 0;
+  margin-left: -1.5em;
+}
+
+body[dir="rtl"] .form-check-label {
+  padding-right: 1.5em;
+  padding-left: 0;
+}
+
+/* Fix switch alignment */
+body[dir="rtl"] .form-switch .form-check-input {
+  margin-left: -2.5em;
+  margin-right: 0;
+}
+
+body[dir="rtl"] .form-switch .form-check-label {
+  padding-left: 0;
+  padding-right: 2.5em;
+}
+

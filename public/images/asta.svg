@@ -1,0 +1,30 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="astaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#1d4ed8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- First A -->
+  <path d="M10 70 L25 20 L40 70 M15 50 L35 50" stroke="url(#astaGradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <polygon points="20,50 25,45 30,50" fill="#14b8a6"/>
+  
+  <!-- S -->
+  <path d="M50 25 Q65 25 65 40 Q65 55 50 55 Q35 55 35 40 Q35 25 50 25" stroke="url(#astaGradient)" stroke-width="6" fill="none" stroke-linecap="round"/>
+  
+  <!-- T -->
+  <line x1="70" y1="20" x2="70" y2="70" stroke="url(#astaGradient)" stroke-width="8" stroke-linecap="round"/>
+  <polygon points="60,20 80,20 70,30" fill="#3b82f6"/>
+  
+  <!-- Second A -->
+  <path d="M90 70 L105 20 L120 70 M95 50 L115 50" stroke="url(#astaGradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <polygon points="100,50 105,45 110,50" fill="#1e40af"/>
+  
+  <!-- Trademark -->
+  <circle cx="180" cy="15" r="8" fill="#1e40af"/>
+  <text x="180" y="19" text-anchor="middle" fill="white" font-family="Arial" font-size="10" font-weight="bold">R</text>
+</svg>

@@ -1,0 +1,25 @@
+/* Import Custom Fonts */
+@import './fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens (approx from UI) */
+:root {
+  --ds-bg: #f5f6fb;            /* app background */
+  --ds-surface: #ffffff;       /* cards */
+  --ds-primary: #6366f1;       /* indigo-500/600 */
+  --ds-primary-600: #4f46e5;   /* indigo-600 */
+  --ds-accent: #f97316;        /* orange-500 */
+  --ds-muted: #6b7280;         /* gray-500 */
+  --ds-border: #e5e7eb;        /* gray-200 */
+  --ds-shadow: 0 6px 20px rgba(99,102,241,0.08), 0 2px 8px rgba(2,6,23,0.06);
+  --ds-radius-card: 1rem;      /* 16px */
+}
+
+/* Utilities */
+.shadow-soft { box-shadow: var(--ds-shadow); }
+.card { background: var(--ds-surface); border: 1px solid var(--ds-border); border-radius: var(--ds-radius-card); box-shadow: var(--ds-shadow); }
+.badge { background: #f3f4f6; color: #6b7280; border-radius: .5rem; padding: .125rem .5rem; font-size: .75rem; line-height: 1rem; }
+.chip { @apply inline-flex items-center px-2 py-1 text-xs rounded-lg; }
