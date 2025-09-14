@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Degree;
 use App\Models\CareerLevel;
+use App\Models\Course;
 use Illuminate\Http\Request;
 
 class DegreeController extends Controller
@@ -69,7 +70,8 @@ class DegreeController extends Controller
     public function create()
     {
         $careerLevels = CareerLevel::orderBy('name')->get(['id','name']);
-        return view('degrees.create', compact('careerLevels'));
+        $courses = Course::orderBy('title')->get(['id', 'title']);
+        return view('degrees.create', compact('careerLevels', 'courses'));
     }
 
     public function store(Request $request)
@@ -82,6 +84,8 @@ class DegreeController extends Controller
             'duration_months' => 'nullable|integer|min:1',
             'credit_hours' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
+            'courses' => 'nullable|array',
+            'courses.*' => 'exists:courses,id',
         ]);
 
         $data = $request->all();
@@ -92,7 +96,13 @@ class DegreeController extends Controller
             $data['name_ar'] = $data['name'];
         }
 
-        Degree::create($data);
+        $degree = Degree::create($data);
+
+        // Update selected courses to belong to this degree
+        if ($request->has('courses')) {
+            Course::whereIn('id', $request->input('courses'))
+                ->update(['degree_id' => $degree->id]);
+        }
 
         return redirect()->route('degrees.index')
             ->with('success', 'Degree created successfully.');
@@ -107,9 +117,12 @@ class DegreeController extends Controller
 
     public function edit(Degree $degree)
     {
+        $careerLevels = CareerLevel::orderBy('name')->get(['id','name']);
+        $courses = Course::orderBy('title')->get(['id', 'title']);
         $currentLevelString = $this->mapIntegerToLevel($degree->level);
+        $selectedCourses = $degree->courses()->pluck('id')->toArray();
 
-        return view('degrees.edit', compact('degree', 'currentLevelString'));
+        return view('degrees.edit', compact('degree', 'careerLevels', 'currentLevelString', 'courses', 'selectedCourses'));
     }
 
     public function update(Request $request, Degree $degree)
@@ -122,6 +135,8 @@ class DegreeController extends Controller
             'duration_months' => 'nullable|integer|min:1',
             'credit_hours' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
+            'courses' => 'nullable|array',
+            'courses.*' => 'exists:courses,id',
         ]);
 
         $data = $request->all();
@@ -133,6 +148,22 @@ class DegreeController extends Controller
         }
 
         $degree->update($data);
+
+        // Update course assignments
+        if ($request->has('courses')) {
+            // Remove this degree from courses that are not selected
+            Course::where('degree_id', $degree->id)
+                ->whereNotIn('id', $request->input('courses'))
+                ->update(['degree_id' => null]);
+            
+            // Assign selected courses to this degree
+            Course::whereIn('id', $request->input('courses'))
+                ->update(['degree_id' => $degree->id]);
+        } else {
+            // If no courses selected, remove all course assignments
+            Course::where('degree_id', $degree->id)
+                ->update(['degree_id' => null]);
+        }
 
         return redirect()->route('degrees.index')
             ->with('success', 'Degree updated successfully.');

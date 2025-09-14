@@ -16,6 +16,9 @@ class AssessmentQuestion extends Model
         'options',
         'correct_answer',
         'points',
+        'difficulty',
+        'category',
+        'created_by',
     ];
 
     protected $casts = [
@@ -30,5 +33,10 @@ class AssessmentQuestion extends Model
     public function answers()
     {
         return $this->hasMany(AssessmentAnswer::class, 'question_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

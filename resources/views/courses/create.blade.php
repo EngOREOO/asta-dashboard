@@ -160,6 +160,22 @@
             </div>
             
             <div>
+              <label for="code" class="block text-sm font-medium text-gray-700 mb-2">كود الدورة *</label>
+              <input type="text" 
+                     id="code" 
+                     name="code" 
+                     value="{{ old('code') }}"
+                     placeholder="CRS-001"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('code') border-red-300 @enderror"
+                     style="font-family: Arial, sans-serif;"
+                     required>
+              @error('code')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+              @enderror
+              <small class="text-gray-500">معرف قصير للدورة</small>
+            </div>
+            
+            <div>
               <label for="description" class="block text-sm font-medium text-gray-700 mb-2">الوصف</label>
               <textarea id="description" 
                         name="description" 
@@ -192,20 +208,6 @@
                 @enderror
               </div>
               
-              <div>
-                <label for="degree_id" class="block text-sm font-medium text-gray-700 mb-2">مسار التعلم</label>
-                <select id="degree_id" 
-                        name="degree_id" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('degree_id') border-red-300 @enderror">
-                  <option value="">اختر المسار</option>
-                  @foreach(($careerLevels ?? collect()) as $cl)
-                    <option value="{{ $cl->id }}" @selected(old('degree_id') == $cl->id)>{{ $cl->name }}</option>
-                  @endforeach
-                </select>
-                @error('degree_id')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-              </div>
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -239,31 +241,6 @@
             </div>
           </div>
 
-          <!-- Optional: Learning Paths (Step 1) - from degrees as multi-select checkboxes -->
-          <div class="space-y-6" x-show="step===1">
-            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
-              <i class="ti ti-route mr-2 text-green-500"></i>
-              مسارات التعلم
-            </h3>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">مسارات التعلم (من جدول المسارات المهنية)</label>
-              @php($degreesList = \App\Models\Degree::orderBy('name')->get(['id','name']))
-              @if($degreesList->isEmpty())
-                <div class="text-gray-500" style="font-size: 1.3rem;">لا توجد مسارات مهنية متاحة حالياً.</div>
-              @else
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                @foreach($degreesList as $d)
-                  <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 bg-white/80 hover:bg-gray-50">
-                    <input type="checkbox" name="degree_ids[]" value="{{ $d->id }}" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" {{ collect(old('degree_ids', []))->contains($d->id) ? 'checked' : '' }}>
-                    <span>{{ $d->name }}</span>
-                  </label>
-                @endforeach
-              </div>
-              <p class="text-gray-500 mt-2" style="font-size: 1.1rem;">يمكنك اختيار أكثر من مسار عبر تحديد عدة خانات.</p>
-              @endif
-            </div>
-          </div>
 
           <!-- Image Upload (Step 1) -->
           <div class="space-y-6" x-show="step===1">

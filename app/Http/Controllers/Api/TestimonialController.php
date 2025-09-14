@@ -82,9 +82,10 @@ class TestimonialController extends Controller
         // Handle image upload
         if ($request->hasFile('user_image')) {
             $image = $request->file('user_image');
-            $filename = time().'_'.uniqid().'.'.$image->getClientOriginalExtension();
-            $path = $image->storeAs('testimonials', $filename, 'public');
-            $data['user_image'] = $path;
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $imagePath = 'testimonials/' . $filename;
+            $image->move(public_path('testimonials'), $filename);
+            $data['user_image'] = $imagePath;
         }
 
         // Set default values
@@ -168,14 +169,15 @@ class TestimonialController extends Controller
         // Handle image upload
         if ($request->hasFile('user_image')) {
             // Delete old image if exists
-            if ($testimonial->user_image && Storage::disk('public')->exists($testimonial->user_image)) {
-                Storage::disk('public')->delete($testimonial->user_image);
+            if ($testimonial->user_image && file_exists(public_path($testimonial->user_image))) {
+                unlink(public_path($testimonial->user_image));
             }
 
             $image = $request->file('user_image');
-            $filename = time().'_'.uniqid().'.'.$image->getClientOriginalExtension();
-            $path = $image->storeAs('testimonials', $filename, 'public');
-            $data['user_image'] = $path;
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $imagePath = 'testimonials/' . $filename;
+            $image->move(public_path('testimonials'), $filename);
+            $data['user_image'] = $imagePath;
         }
 
         $testimonial->update($data);
@@ -235,8 +237,8 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial): JsonResponse
     {
         // Delete associated image if exists
-        if ($testimonial->user_image && Storage::disk('public')->exists($testimonial->user_image)) {
-            Storage::disk('public')->delete($testimonial->user_image);
+        if ($testimonial->user_image && file_exists(public_path($testimonial->user_image))) {
+            unlink(public_path($testimonial->user_image));
         }
 
         $testimonial->delete();

@@ -23,6 +23,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
+            'code' => 'required|string|max:50|unique:categories,code',
             'description' => 'nullable|string',
             'image_url' => 'nullable|url',
         ]);
@@ -57,6 +58,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
+            'code' => 'required|string|max:50|unique:categories,code,' . $category->id,
             'description' => 'nullable|string',
             'image_url' => 'nullable|url',
         ]);

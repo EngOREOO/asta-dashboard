@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'لوحة التحكم') - ASTA</title>
+    <!-- Bootstrap (for some admin pages using Bootstrap classes) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Vite Assets -->
     @vite(['resources/css/dash.css', 'resources/js/dash/assets.js'])
@@ -58,6 +60,7 @@
                 </div>
 
                 <!-- إدارة المستخدمين -->
+                @if(auth()->user()->can('users.read') || auth()->user()->can('instructors.read') || auth()->user()->can('instructor-applications.read') || auth()->user()->can('roles-permissions.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 rounded-full"></div>
@@ -67,6 +70,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        @can('users.read')
                         <a href="{{ route('users.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('users.*') ? 'text-white bg-gradient-to-r from-teal-500 to-cyan-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-600 hover:shadow-md' }}"
                            @click="activeSection = 'users'">
@@ -75,6 +79,18 @@
                             </div>
                             <span>جميع المستخدمين</span>
                         </a>
+                        @endcan
+                        @if (Route::has('active-users.index') && auth()->user()->can('users.read'))
+                        <!-- <a href="{{ route('active-users.index') }}" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('active-users.*') ? 'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:shadow-md' }}"
+                           @click="activeSection = 'active-users'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ request()->routeIs('active-users.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20' }} transition-all duration-300">
+                                <i class="ti ti-user-check text-lg"></i>
+                            </div>
+                            <span>المستخدمون النشطون</span>
+                        </a> -->
+                        @endif
+                        @can('instructors.read')
                         <a href="{{ route('instructors.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('instructors.*') ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 hover:shadow-md' }}"
                            @click="activeSection = 'instructors'">
@@ -83,7 +99,8 @@
                             </div>
                             <span>المحاضرين</span>
                         </a>
-                        @if (Route::has('instructor-applications.index'))
+                        @endcan
+                        @if (Route::has('instructor-applications.index') && auth()->user()->can('instructor-applications.read'))
                         <a href="{{ route('instructor-applications.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('instructor-applications.*') ? 'text-white bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-blue-600 hover:shadow-md' }}"
                            @click="activeSection = 'instructor-applications'">
@@ -93,7 +110,7 @@
                             <span>طلبات المحاضرين</span>
                         </a>
                         @endif
-                        @if (Route::has('roles.index'))
+                        @if (Route::has('roles.index') && auth()->user()->can('roles-permissions.read'))
                         <a href="{{ route('roles.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('roles.*') ? 'text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:shadow-md' }}"
                            @click="activeSection = 'roles'">
@@ -105,8 +122,10 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
                 <!-- إدارة الدورات -->
+                @if(auth()->user()->can('courses.read') || auth()->user()->can('categories.read') || auth()->user()->can('course-levels.read') || auth()->user()->can('topics.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
@@ -116,6 +135,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        @can('courses.read')
                         <a href="{{ route('courses.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('courses.index') ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 hover:shadow-md' }}"
                            @click="activeSection = 'courses'">
@@ -124,6 +144,8 @@
                             </div>
                             <span>جميع الدورات</span>
                         </a>
+                        @endcan
+                        @can('courses.create')
                         <a href="{{ route('courses.create') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('courses.create') ? 'text-white bg-gradient-to-r from-teal-500 to-cyan-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-600 hover:shadow-md' }}"
                            @click="activeSection = 'courses.create'">
@@ -132,6 +154,8 @@
                             </div>
                             <span>إضافة دورة جديدة</span>
                         </a>
+                        @endcan
+                        @can('categories.read')
                         <a href="{{ route('categories.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('categories.*') ? 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:shadow-md' }}"
                            @click="activeSection = 'categories'">
@@ -140,15 +164,8 @@
                             </div>
                             <span>الأقسام</span>
                         </a>
-                        <!-- <a href="{{ route('course-materials.index') }}" 
-                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('course-materials.*') ? 'text-white bg-gradient-to-r from-indigo-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-blue-600 hover:shadow-md' }}"
-                           @click="activeSection = 'course-materials'">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ request()->routeIs('course-materials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20' }} transition-all duration-300">
-                                <i class="ti ti-files text-lg"></i>
-                            </div>
-                            <span>المواد التعليمية</span>
-                        </a> -->
-                        @if (Route::has('course-levels.index'))
+                        @endcan
+                        @if (Route::has('course-levels.index') && auth()->user()->can('course-levels.read'))
                         <a href="{{ route('course-levels.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('course-levels.*') ? 'text-white bg-gradient-to-r from-teal-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-600 hover:shadow-md' }}"
                            @click="activeSection = 'course-levels'">
@@ -158,7 +175,7 @@
                             <span>مسارات الدورات</span>
                         </a>
                         @endif
-                        @if (Route::has('topics.index'))
+                        @if (Route::has('topics.index') && auth()->user()->can('topics.read'))
                         <a href="{{ route('topics.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('topics.*') ? 'text-white bg-gradient-to-r from-cyan-500 to-indigo-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-600 hover:shadow-md' }}"
                            @click="activeSection = 'topics'">
@@ -170,8 +187,10 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
                 <!-- الكوبونات والخصومات -->
+                @if(auth()->user()->can('coupons.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-emerald-500 to-teal-600 rounded-full"></div>
@@ -190,6 +209,7 @@
                             </div>
                             <span>قسائم الخصم</span>
                         </a>
+                        @can('coupons.create')
                         @php($couponsCreate = Route::has('coupons.create') ? route('coupons.create') : '#')
                         <a href="{{ $couponsCreate }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('coupons.create') ? 'text-white bg-gradient-to-r from-teal-600 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-600 hover:to-emerald-600 hover:shadow-md' }}"
@@ -199,10 +219,13 @@
                             </div>
                             <span>إنشاء كوبون جديد</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- المسارات المهنية -->
+                @if(auth()->user()->can('degrees.read') || auth()->user()->can('learning-paths.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-yellow-500 to-orange-500 rounded-full"></div>
@@ -212,6 +235,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        @can('degrees.read')
                         <a href="{{ route('degrees.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('degrees.*') ? 'text-white bg-gradient-to-r from-yellow-500 to-orange-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-600 hover:shadow-md' }}"
                            @click="activeSection = 'degrees'">
@@ -220,14 +244,17 @@
                             </div>
                             <span>المسارات المهنية</span>
                         </a>
-                        <a href="{{ route('learning-paths.index') }}" 
+                        @endcan
+                        @can('learning-paths.read')
+                        <!-- <a href="{{ route('learning-paths.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('learning-paths.*') ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 hover:shadow-md' }}"
                            @click="activeSection = 'learning-paths'">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ request()->routeIs('learning-paths.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20' }} transition-all duration-300">
                                 <i class="ti ti-route text-lg"></i>
                             </div>
                             <span>المسارات التعليمية</span>
-                        </a>
+                        </a> -->
+                        @endcan
                         <a href="{{ route('career-levels.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('career-levels.*') ? 'text-white bg-gradient-to-r from-teal-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-600 hover:shadow-md' }}"
                            @click="activeSection = 'career-levels'">
@@ -238,15 +265,19 @@
                         </a>
                     </div>
                 </div>
+                @endif
 
                 <!-- الشهادات -->
-                @if (Route::has('certificates.index'))
-                <div class="mb-8">
+                @if (Route::has('certificates.index') && auth()->user()->can('certificates.read'))
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">الشهادات</h3>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>الشهادات</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2" x-show="open" x-transition>
                         <a href="{{ route('certificates.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('certificates.*') ? 'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:shadow-md' }}"
                            @click="activeSection = 'certificates'">
@@ -260,6 +291,7 @@
                 @endif
 
                 <!-- التعليقات والآراء -->
+                @if(auth()->user()->can('reviews.read') || auth()->user()->can('testimonials.read') || auth()->user()->can('comments.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-rose-500 to-pink-600 rounded-full"></div>
@@ -269,7 +301,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
-                        @if (Route::has('reviews.index'))
+                        @if (Route::has('reviews.index') && auth()->user()->can('reviews.read'))
                         <a href="{{ route('reviews.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('reviews.*') ? 'text-white bg-gradient-to-r from-rose-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-600 hover:shadow-md' }}"
                            @click="activeSection = 'reviews'">
@@ -279,7 +311,7 @@
                             <span>التعليقات</span>
                         </a>
                         @endif
-                        @if (Route::has('testimonials.index'))
+                        @if (Route::has('testimonials.index') && auth()->user()->can('testimonials.read'))
                         <a href="{{ route('testimonials.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-purple-600 hover:shadow-md' }}"
                            @click="activeSection = 'testimonials'">
@@ -291,9 +323,10 @@
                         @endif
                     </div>
                 </div>
+                @endif
 
                 <!-- الملفات / مكتبة الوسائط -->
-                @if (Route::has('file-uploads.index'))
+                @if (Route::has('file-uploads.index') && auth()->user()->can('files.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-sky-500 to-cyan-600 rounded-full"></div>
@@ -376,12 +409,17 @@
                 </div> -->
 
                 <!-- الاختبارات والتقييم -->
-                <div class="mb-8">
+                @if(auth()->user()->can('assessments.read') || auth()->user()->can('quizzes.read'))
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-red-500 to-pink-500 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">الاختبارات والتقييم</h3>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>الاختبارات والتقييم</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2" x-show="open" x-transition>
+                        @can('assessments.read')
                         <a href="{{ route('assessments.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('assessments.*') ? 'text-white bg-gradient-to-r from-red-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 hover:shadow-md' }}"
                            @click="activeSection = 'assessments'">
@@ -390,18 +428,33 @@
                             </div>
                             <span>الاختبارات</span>
                         </a>
+                        @endcan
+                        @can('assessments.read')
+                        <a href="{{ route('question-bank.index') }}" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('question-bank.*') ? 'text-white bg-gradient-to-r from-orange-500 to-red-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 hover:shadow-md' }}"
+                           @click="activeSection = 'question-bank'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ request()->routeIs('question-bank.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20' }} transition-all duration-300">
+                                <i class="ti ti-database text-lg"></i>
+                            </div>
+                            <span>بنك الأسئلة</span>
+                        </a>
+                        @endcan
+                        @can('quizzes.read')
                         <a href="{{ route('quizzes.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('quizzes.*') ? 'text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-violet-500 hover:to-purple-600 hover:shadow-md' }}"
                            @click="activeSection = 'quizzes'">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ request()->routeIs('quizzes.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20' }} transition-all duration-300">
                                 <i class="ti ti-brain text-lg"></i>
                             </div>
-                            <span>الاختبارات السريعة</span>
+                            <span>اختبارات القبول</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- إدارة الطلاب -->
+                @if(auth()->user()->can('enrollments.read') || auth()->user()->can('student-progress.read'))
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-lime-500 to-green-500 rounded-full"></div>
@@ -411,6 +464,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        @can('enrollments.read')
                         <a href="{{ route('enrollments.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('enrollments.*') ? 'text-white bg-gradient-to-r from-lime-500 to-green-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-lime-500 hover:to-green-600 hover:shadow-md' }}"
                            @click="activeSection = 'enrollments'">
@@ -419,6 +473,8 @@
                             </div>
                             <span>التسجيلات</span>
                         </a>
+                        @endcan
+                        @can('student-progress.read')
                         <a href="{{ route('student-progress.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('student-progress.*') ? 'text-white bg-gradient-to-r from-sky-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-sky-500 hover:to-blue-600 hover:shadow-md' }}"
                            @click="activeSection = 'student-progress'">
@@ -427,25 +483,22 @@
                             </div>
                             <span>تقدم الطلاب</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- التحليلات -->
-                <div class="mb-8" x-data="{ open: false }">
+                @if(auth()->user()->can('analytics.read'))
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">التحليلات</h3>
-                    </div>
-                    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-xl font-medium text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:shadow-lg rounded-xl transition-all duration-300 cursor-pointer group">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
-                                <i class="ti ti-chart-bar text-lg"></i>
-                            </div>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
                             <span>التحليلات</span>
-                        </div>
-                        <i class="ti ti-chevron-down text-sm transition-transform duration-300" :class="{ 'rotate-180': open }"></i>
-                    </button>
-                    <div x-show="open" x-transition class="mt-2 space-y-2 pr-8">
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2" x-show="open" x-transition>
                         <a href="{{ route('assessments.general-analytics') }}" class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-2.5 text-xl font-medium text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:shadow-md rounded-lg transition-all duration-300 cursor-pointer">
                             <div class="w-6 h-6 rounded-md flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
                                 <i class="ti ti-chart-pie text-sm"></i>
@@ -462,7 +515,7 @@
                             <div class="w-6 h-6 rounded-md flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
                                 <i class="ti ti-brain text-sm"></i>
                             </div>
-                            <span>تحليلات الاختبارات السريعة</span>
+                            <span>تحليلات اختبارات القبول</span>
                         </a>
                         <a href="{{ route('enrollments.analytics') }}" class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-2.5 text-xl font-medium text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:shadow-md rounded-lg transition-all duration-300 cursor-pointer">
                             <div class="w-6 h-6 rounded-md flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
@@ -472,14 +525,19 @@
                         </a>
                     </div>
                 </div>
+                @endif
 
                 <!-- إعدادات النظام -->
-                <div class="mb-8">
+                @if(auth()->user()->can('system-settings.read'))
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-slate-500 to-gray-500 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">إعدادات النظام</h3>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>إعدادات النظام</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2" x-show="open" x-transition>
                         <a href="{{ route('partners.index') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('partners.*') ? 'text-white bg-gradient-to-r from-slate-500 to-gray-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-slate-500 hover:to-gray-600 hover:shadow-md' }}"
                            @click="activeSection = 'partners'">
@@ -487,6 +545,14 @@
                                 <i class="ti ti-handshake text-lg"></i>
                             </div>
                             <span>الشركاء</span>
+                        </a>
+                        <a href="{{ route('testimonials.index') }}" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:shadow-md' }}"
+                           @click="activeSection = 'testimonials'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center {{ request()->routeIs('testimonials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20' }} transition-all duration-300">
+                                <i class="ti ti-quote text-lg"></i>
+                            </div>
+                            <span>الشهادات</span>
                         </a>
                         <a href="{{ route('system-settings.info') }}" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer {{ request()->routeIs('system-settings.*') ? 'text-white bg-gradient-to-r from-gray-500 to-slate-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-gray-500 hover:to-slate-600 hover:shadow-md' }}"
@@ -498,6 +564,7 @@
                         </a>
                     </div>
                 </div>
+                @endif
             </nav>
 
             <!-- Profile Block - Pinned to Bottom -->
@@ -594,6 +661,8 @@
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Bootstrap JS (Modal, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       function sidebarState(){
         return {
@@ -609,5 +678,11 @@
         }
       }
     </script>
+    
+    <!-- Session Timeout Manager -->
+    <script src="{{ asset('js/session-timeout.js') }}"></script>
+    <meta name="user-authenticated" content="true">
+    
+    @stack('scripts')
 </body>
 </html>

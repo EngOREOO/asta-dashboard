@@ -122,7 +122,7 @@
                        class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 text-gray-700 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 {{ request()->routeIs('quizzes.*') ? 'bg-blue-50 text-blue-700 border-e-2 border-blue-600' : '' }}"
                        aria-current="{{ request()->routeIs('quizzes.*') ? 'page' : 'false' }}">
                         <i class="ti ti-brain text-lg"></i>
-                        <span class="font-medium">الاختبارات السريعة</span>
+                        <span class="font-medium">اختبارات القبول</span>
                     </a>
                 </div>
 
@@ -265,7 +265,7 @@
                            class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-2.5 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 {{ request()->routeIs('analytics.quizzes') ? 'bg-blue-50 text-blue-700' : '' }}"
                            aria-current="{{ request()->routeIs('analytics.quizzes') ? 'page' : 'false' }}">
                             <i class="ti ti-brain text-base"></i>
-                            <span>تحليل الاختبارات السريعة</span>
+                            <span>تحليل اختبارات القبول</span>
                         </a>
 
                         <a href="{{ route('enrollments.analytics') }}" 

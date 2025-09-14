@@ -17,6 +17,7 @@ class Course extends Model
         'degree_id',
         'title',
         'slug',
+        'code',
         'description',
         'thumbnail',
         'price',
@@ -27,10 +28,26 @@ class Course extends Model
         'rejection_reason',
         'average_rating',
         'total_ratings',
+        'is_featured',
+        'allow_comments',
+        'allow_notes',
+        'allow_ratings',
+        'overview',
+        'prerequisites',
+        'learning_objectives',
+        'target_audience',
+        'difficulty_level',
+        'language',
+        'estimated_duration',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'is_featured' => 'boolean',
+        'allow_comments' => 'boolean',
+        'allow_notes' => 'boolean',
+        'allow_ratings' => 'boolean',
+        'estimated_duration' => 'integer',
     ];
 
     protected static function boot()

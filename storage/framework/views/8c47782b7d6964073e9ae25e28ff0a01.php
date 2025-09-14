@@ -60,6 +60,19 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
           </div>
+          <div>
+            <label class="block text-gray-700 mb-2" for="code" style="font-size: 1.3rem;">كود القسم *</label>
+            <input type="text" id="code" name="code" value="<?php echo e(old('code')); ?>" placeholder="CAT-001" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem; font-family: Arial, sans-serif;" required>
+            <small class="text-gray-500">معرف قصير للقسم</small>
+            <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
           <div class="md:col-span-2">
             <label class="block text-gray-700 mb-2" for="description" style="font-size: 1.3rem;">الوصف</label>
             <textarea id="description" name="description" rows="4" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;"><?php echo e(old('description')); ?></textarea>

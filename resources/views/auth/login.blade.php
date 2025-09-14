@@ -32,6 +32,19 @@
     </div>
     @endif
 
+    @if (session('session_expired'))
+    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6 animate-slide-down">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <i class="ti ti-clock text-yellow-400 text-xl"></i>
+        </div>
+        <div class="mr-3">
+          <p class="font-medium text-yellow-800" style="font-size: 1.3rem;">{{ session('session_expired') }}</p>
+        </div>
+      </div>
+    </div>
+    @endif
+
     <form method="POST" action="{{ route('login') }}" novalidate class="space-y-6">
       @csrf
       

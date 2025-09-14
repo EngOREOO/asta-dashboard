@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $__env->yieldContent('title', 'لوحة التحكم'); ?> - ASTA</title>
+    <!-- Bootstrap (for some admin pages using Bootstrap classes) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Vite Assets -->
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/dash.css', 'resources/js/dash/assets.js']); ?>
@@ -58,6 +60,7 @@
                 </div>
 
                 <!-- إدارة المستخدمين -->
+                <?php if(auth()->user()->can('users.read') || auth()->user()->can('instructors.read') || auth()->user()->can('instructor-applications.read') || auth()->user()->can('roles-permissions.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-teal-500 to-cyan-500 rounded-full"></div>
@@ -67,6 +70,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('users.read')): ?>
                         <a href="<?php echo e(route('users.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('users.*') ? 'text-white bg-gradient-to-r from-teal-500 to-cyan-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'users'">
@@ -75,6 +79,18 @@
                             </div>
                             <span>جميع المستخدمين</span>
                         </a>
+                        <?php endif; ?>
+                        <?php if(Route::has('active-users.index') && auth()->user()->can('users.read')): ?>
+                        <!-- <a href="<?php echo e(route('active-users.index')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('active-users.*') ? 'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'active-users'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('active-users.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-user-check text-lg"></i>
+                            </div>
+                            <span>المستخدمون النشطون</span>
+                        </a> -->
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('instructors.read')): ?>
                         <a href="<?php echo e(route('instructors.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('instructors.*') ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'instructors'">
@@ -83,7 +99,8 @@
                             </div>
                             <span>المحاضرين</span>
                         </a>
-                        <?php if(Route::has('instructor-applications.index')): ?>
+                        <?php endif; ?>
+                        <?php if(Route::has('instructor-applications.index') && auth()->user()->can('instructor-applications.read')): ?>
                         <a href="<?php echo e(route('instructor-applications.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('instructor-applications.*') ? 'text-white bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-blue-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'instructor-applications'">
@@ -93,7 +110,7 @@
                             <span>طلبات المحاضرين</span>
                         </a>
                         <?php endif; ?>
-                        <?php if(Route::has('roles.index')): ?>
+                        <?php if(Route::has('roles.index') && auth()->user()->can('roles-permissions.read')): ?>
                         <a href="<?php echo e(route('roles.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('roles.*') ? 'text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'roles'">
@@ -105,8 +122,10 @@
                         <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- إدارة الدورات -->
+                <?php if(auth()->user()->can('courses.read') || auth()->user()->can('categories.read') || auth()->user()->can('course-levels.read') || auth()->user()->can('topics.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
@@ -116,6 +135,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('courses.read')): ?>
                         <a href="<?php echo e(route('courses.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('courses.index') ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'courses'">
@@ -124,6 +144,8 @@
                             </div>
                             <span>جميع الدورات</span>
                         </a>
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('courses.create')): ?>
                         <a href="<?php echo e(route('courses.create')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('courses.create') ? 'text-white bg-gradient-to-r from-teal-500 to-cyan-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'courses.create'">
@@ -132,6 +154,8 @@
                             </div>
                             <span>إضافة دورة جديدة</span>
                         </a>
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('categories.read')): ?>
                         <a href="<?php echo e(route('categories.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('categories.*') ? 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'categories'">
@@ -140,15 +164,8 @@
                             </div>
                             <span>الأقسام</span>
                         </a>
-                        <!-- <a href="<?php echo e(route('course-materials.index')); ?>" 
-                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('course-materials.*') ? 'text-white bg-gradient-to-r from-indigo-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-blue-600 hover:shadow-md'); ?>"
-                           @click="activeSection = 'course-materials'">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('course-materials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
-                                <i class="ti ti-files text-lg"></i>
-                            </div>
-                            <span>المواد التعليمية</span>
-                        </a> -->
-                        <?php if(Route::has('course-levels.index')): ?>
+                        <?php endif; ?>
+                        <?php if(Route::has('course-levels.index') && auth()->user()->can('course-levels.read')): ?>
                         <a href="<?php echo e(route('course-levels.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('course-levels.*') ? 'text-white bg-gradient-to-r from-teal-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'course-levels'">
@@ -158,7 +175,7 @@
                             <span>مسارات الدورات</span>
                         </a>
                         <?php endif; ?>
-                        <?php if(Route::has('topics.index')): ?>
+                        <?php if(Route::has('topics.index') && auth()->user()->can('topics.read')): ?>
                         <a href="<?php echo e(route('topics.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('topics.*') ? 'text-white bg-gradient-to-r from-cyan-500 to-indigo-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'topics'">
@@ -170,8 +187,10 @@
                         <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- الكوبونات والخصومات -->
+                <?php if(auth()->user()->can('coupons.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-emerald-500 to-teal-600 rounded-full"></div>
@@ -190,6 +209,7 @@
                             </div>
                             <span>قسائم الخصم</span>
                         </a>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('coupons.create')): ?>
                         <?php ($couponsCreate = Route::has('coupons.create') ? route('coupons.create') : '#'); ?>
                         <a href="<?php echo e($couponsCreate); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('coupons.create') ? 'text-white bg-gradient-to-r from-teal-600 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-600 hover:to-emerald-600 hover:shadow-md'); ?>"
@@ -199,10 +219,13 @@
                             </div>
                             <span>إنشاء كوبون جديد</span>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- المسارات المهنية -->
+                <?php if(auth()->user()->can('degrees.read') || auth()->user()->can('learning-paths.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-yellow-500 to-orange-500 rounded-full"></div>
@@ -212,6 +235,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('degrees.read')): ?>
                         <a href="<?php echo e(route('degrees.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('degrees.*') ? 'text-white bg-gradient-to-r from-yellow-500 to-orange-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'degrees'">
@@ -220,14 +244,17 @@
                             </div>
                             <span>المسارات المهنية</span>
                         </a>
-                        <a href="<?php echo e(route('learning-paths.index')); ?>" 
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('learning-paths.read')): ?>
+                        <!-- <a href="<?php echo e(route('learning-paths.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('learning-paths.*') ? 'text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'learning-paths'">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('learning-paths.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
                                 <i class="ti ti-route text-lg"></i>
                             </div>
                             <span>المسارات التعليمية</span>
-                        </a>
+                        </a> -->
+                        <?php endif; ?>
                         <a href="<?php echo e(route('career-levels.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('career-levels.*') ? 'text-white bg-gradient-to-r from-teal-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'career-levels'">
@@ -238,15 +265,19 @@
                         </a>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- الشهادات -->
-                <?php if(Route::has('certificates.index')): ?>
-                <div class="mb-8">
+                <?php if(Route::has('certificates.index') && auth()->user()->can('certificates.read')): ?>
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">الشهادات</h3>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>الشهادات</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2" x-show="open" x-transition>
                         <a href="<?php echo e(route('certificates.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('certificates.*') ? 'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'certificates'">
@@ -260,6 +291,7 @@
                 <?php endif; ?>
 
                 <!-- التعليقات والآراء -->
+                <?php if(auth()->user()->can('reviews.read') || auth()->user()->can('testimonials.read') || auth()->user()->can('comments.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-rose-500 to-pink-600 rounded-full"></div>
@@ -269,7 +301,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
-                        <?php if(Route::has('reviews.index')): ?>
+                        <?php if(Route::has('reviews.index') && auth()->user()->can('reviews.read')): ?>
                         <a href="<?php echo e(route('reviews.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('reviews.*') ? 'text-white bg-gradient-to-r from-rose-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'reviews'">
@@ -279,7 +311,7 @@
                             <span>التعليقات</span>
                         </a>
                         <?php endif; ?>
-                        <?php if(Route::has('testimonials.index')): ?>
+                        <?php if(Route::has('testimonials.index') && auth()->user()->can('testimonials.read')): ?>
                         <a href="<?php echo e(route('testimonials.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-purple-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'testimonials'">
@@ -291,9 +323,10 @@
                         <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- الملفات / مكتبة الوسائط -->
-                <?php if(Route::has('file-uploads.index')): ?>
+                <?php if(Route::has('file-uploads.index') && auth()->user()->can('files.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-sky-500 to-cyan-600 rounded-full"></div>
@@ -376,12 +409,17 @@
                 </div> -->
 
                 <!-- الاختبارات والتقييم -->
-                <div class="mb-8">
+                <?php if(auth()->user()->can('assessments.read') || auth()->user()->can('quizzes.read')): ?>
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-red-500 to-pink-500 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">الاختبارات والتقييم</h3>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>الاختبارات والتقييم</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2" x-show="open" x-transition>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('assessments.read')): ?>
                         <a href="<?php echo e(route('assessments.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('assessments.*') ? 'text-white bg-gradient-to-r from-red-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'assessments'">
@@ -390,18 +428,33 @@
                             </div>
                             <span>الاختبارات</span>
                         </a>
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('assessments.read')): ?>
+                        <a href="<?php echo e(route('question-bank.index')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('question-bank.*') ? 'text-white bg-gradient-to-r from-orange-500 to-red-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'question-bank'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('question-bank.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-database text-lg"></i>
+                            </div>
+                            <span>بنك الأسئلة</span>
+                        </a>
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('quizzes.read')): ?>
                         <a href="<?php echo e(route('quizzes.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('quizzes.*') ? 'text-white bg-gradient-to-r from-violet-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-violet-500 hover:to-purple-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'quizzes'">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('quizzes.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
                                 <i class="ti ti-brain text-lg"></i>
                             </div>
-                            <span>الاختبارات السريعة</span>
+                            <span>اختبارات القبول</span>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- إدارة الطلاب -->
+                <?php if(auth()->user()->can('enrollments.read') || auth()->user()->can('student-progress.read')): ?>
                 <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-lime-500 to-green-500 rounded-full"></div>
@@ -411,6 +464,7 @@
                         </button>
                     </div>
                     <div class="space-y-2" x-show="open" x-transition>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('enrollments.read')): ?>
                         <a href="<?php echo e(route('enrollments.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('enrollments.*') ? 'text-white bg-gradient-to-r from-lime-500 to-green-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-lime-500 hover:to-green-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'enrollments'">
@@ -419,6 +473,8 @@
                             </div>
                             <span>التسجيلات</span>
                         </a>
+                        <?php endif; ?>
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('student-progress.read')): ?>
                         <a href="<?php echo e(route('student-progress.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('student-progress.*') ? 'text-white bg-gradient-to-r from-sky-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-sky-500 hover:to-blue-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'student-progress'">
@@ -427,25 +483,22 @@
                             </div>
                             <span>تقدم الطلاب</span>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- التحليلات -->
-                <div class="mb-8" x-data="{ open: false }">
+                <?php if(auth()->user()->can('analytics.read')): ?>
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">التحليلات</h3>
-                    </div>
-                    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-xl font-medium text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:shadow-lg rounded-xl transition-all duration-300 cursor-pointer group">
-                        <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
-                                <i class="ti ti-chart-bar text-lg"></i>
-                            </div>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
                             <span>التحليلات</span>
-                        </div>
-                        <i class="ti ti-chevron-down text-sm transition-transform duration-300" :class="{ 'rotate-180': open }"></i>
-                    </button>
-                    <div x-show="open" x-transition class="mt-2 space-y-2 pr-8">
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2" x-show="open" x-transition>
                         <a href="<?php echo e(route('assessments.general-analytics')); ?>" class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-2.5 text-xl font-medium text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:shadow-md rounded-lg transition-all duration-300 cursor-pointer">
                             <div class="w-6 h-6 rounded-md flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
                                 <i class="ti ti-chart-pie text-sm"></i>
@@ -462,7 +515,7 @@
                             <div class="w-6 h-6 rounded-md flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
                                 <i class="ti ti-brain text-sm"></i>
                             </div>
-                            <span>تحليلات الاختبارات السريعة</span>
+                            <span>تحليلات اختبارات القبول</span>
                         </a>
                         <a href="<?php echo e(route('enrollments.analytics')); ?>" class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-2.5 text-xl font-medium text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:shadow-md rounded-lg transition-all duration-300 cursor-pointer">
                             <div class="w-6 h-6 rounded-md flex items-center justify-center bg-gray-100 group-hover:bg-white/20 transition-all duration-300">
@@ -472,14 +525,19 @@
                         </a>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- إعدادات النظام -->
-                <div class="mb-8">
+                <?php if(auth()->user()->can('system-settings.read')): ?>
+                <div class="mb-8" x-data="{open:true}">
                     <div class="relative mb-4 px-2">
                         <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-slate-500 to-gray-500 rounded-full"></div>
-                        <h3 class="relative text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4">إعدادات النظام</h3>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>إعدادات النظام</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2" x-show="open" x-transition>
                         <a href="<?php echo e(route('partners.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('partners.*') ? 'text-white bg-gradient-to-r from-slate-500 to-gray-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-slate-500 hover:to-gray-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'partners'">
@@ -487,6 +545,14 @@
                                 <i class="ti ti-handshake text-lg"></i>
                             </div>
                             <span>الشركاء</span>
+                        </a>
+                        <a href="<?php echo e(route('testimonials.index')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'testimonials'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('testimonials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-quote text-lg"></i>
+                            </div>
+                            <span>الشهادات</span>
                         </a>
                         <a href="<?php echo e(route('system-settings.info')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('system-settings.*') ? 'text-white bg-gradient-to-r from-gray-500 to-slate-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-gray-500 hover:to-slate-600 hover:shadow-md'); ?>"
@@ -498,6 +564,7 @@
                         </a>
                     </div>
                 </div>
+                <?php endif; ?>
             </nav>
 
             <!-- Profile Block - Pinned to Bottom -->
@@ -594,6 +661,8 @@
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Bootstrap JS (Modal, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       function sidebarState(){
         return {
@@ -609,6 +678,12 @@
         }
       }
     </script>
+    
+    <!-- Session Timeout Manager -->
+    <script src="<?php echo e(asset('js/session-timeout.js')); ?>"></script>
+    <meta name="user-authenticated" content="true">
+    
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
 <?php /**PATH C:\Users\ahmed\Documents\asta\asss\resources\views/layouts/dash.blade.php ENDPATH**/ ?>

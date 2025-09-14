@@ -17,39 +17,44 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions safely (only if not exists)
-        $permissions = [
-            // Course permissions
-            'create courses',
-            'edit courses',
-            'delete courses',
-            'view courses',
-            'approve courses',
-            
-            // Lesson permissions
-            'create lessons',
-            'edit lessons',
-            'delete lessons',
-            'view lessons',
-            
-            // User management
-            'manage users',
-            'manage roles',
-            
-            // Enrollment permissions
-            'enroll in courses',
-            'view enrolled courses',
-            
-            // Content permissions
-            'upload content',
-            'manage content',
-            'view content',
-            
-            // Assessment permissions
-            'create assessments',
-            'take assessments',
-            'grade assessments',
+        // Grouped permissions aligned with sidebar sections (CRUD: read, create, edit, delete)
+        $groups = [
+            'users' => ['read','create','edit','delete'],
+            'instructors' => ['read','create','edit','delete'],
+            'instructor-applications' => ['read','create','edit','delete'],
+            'roles-permissions' => ['read','create','edit','delete'],
+
+            'courses' => ['read','create','edit','delete'],
+            'categories' => ['read','create','edit','delete'],
+            'course-levels' => ['read','create','edit','delete'],
+            'topics' => ['read','create','edit','delete'],
+
+            'assessments' => ['read','create','edit','delete'],
+            'quizzes' => ['read','create','edit','delete'],
+
+            'enrollments' => ['read','create','edit','delete'],
+            'student-progress' => ['read'],
+
+            'coupons' => ['read','create','edit','delete'],
+            'degrees' => ['read','create','edit','delete'],
+            'learning-paths' => ['read','create','edit','delete'],
+            'certificates' => ['read','create','edit','delete'],
+
+            'reviews' => ['read','create','edit','delete'],
+            'testimonials' => ['read','create','edit','delete'],
+            'comments' => ['read','create','edit','delete'],
+
+            'files' => ['read','create','edit','delete'],
+            'analytics' => ['read'],
+            'system-settings' => ['read','edit'],
         ];
+
+        $permissions = [];
+        foreach ($groups as $module => $actions) {
+            foreach ($actions as $action) {
+                $permissions[] = "$module.$action";
+            }
+        }
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -65,29 +70,16 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $instructorRole = Role::firstOrCreate(['name' => 'instructor']);
         $instructorRole->syncPermissions([
-            'create courses',
-            'edit courses',
-            'delete courses',
-            'view courses',
-            'create lessons',
-            'edit lessons',
-            'delete lessons',
-            'view lessons',
-            'upload content',
-            'manage content',
-            'view content',
-            'create assessments',
-            'grade assessments',
+            'courses.read','courses.create','courses.edit','courses.delete',
+            'categories.read','categories.create','categories.edit','categories.delete',
+            'assessments.read','assessments.create','assessments.edit',
+            'quizzes.read','quizzes.create','quizzes.edit',
+            'files.read','files.create','files.edit','files.delete',
         ]);
 
         $studentRole = Role::firstOrCreate(['name' => 'student']);
         $studentRole->syncPermissions([
-            'view courses',
-            'view lessons',
-            'view content',
-            'take assessments',
-            'enroll in courses',
-            'view enrolled courses',
+            'courses.read','assessments.read','quizzes.read','enrollments.read',
         ]);
     }
 }

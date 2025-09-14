@@ -93,6 +93,7 @@
           <tr>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">#</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">الاسم</th>
+            <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">كود القسم</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">الوصف</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">عدد الدورات</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">الحالة</th>
@@ -116,6 +117,16 @@
                     <div class="text-gray-500" style="font-size: 1.3rem;"><?php echo e($category->slug); ?></div>
                   </div>
                 </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-gray-900" style="font-size: 1.3rem;">
+                <?php if($category->code): ?>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-800" style="font-family: Arial, sans-serif;">
+                    <?php echo e($category->code); ?>
+
+                  </span>
+                <?php else: ?>
+                  <span class="text-gray-400">—</span>
+                <?php endif; ?>
               </td>
               <td class="px-6 py-4">
                 <div class="text-gray-900" style="font-size: 1.3rem;">

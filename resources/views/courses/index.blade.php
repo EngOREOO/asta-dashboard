@@ -157,6 +157,7 @@
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">#</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">الصورة</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">اسم الدورة</th>
+            <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">كود الدورة</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">المحاضر</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">القسم</th>
             <th class="px-6 py-4 text-right font-medium text-black uppercase tracking-wider" style="font-size: 1.3rem;">السعر</th>
@@ -188,6 +189,15 @@
                   <div class="text-gray-500" style="font-size: 1.3rem;">{{ Str::limit($course->description, 50) }}</div>
                   @endif
                 </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-gray-900" style="font-size: 1.3rem;">
+                @if($course->code)
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-800" style="font-family: Arial, sans-serif;">
+                    {{ $course->code }}
+                  </span>
+                @else
+                  <span class="text-gray-400">—</span>
+                @endif
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-gray-900" style="font-size: 1.3rem;">

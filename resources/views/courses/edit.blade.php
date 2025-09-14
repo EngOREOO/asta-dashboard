@@ -156,6 +156,22 @@
             </div>
             
             <div>
+              <label for="code" class="block text-gray-700 mb-2">كود الدورة *</label>
+              <input type="text" 
+                     id="code" 
+                     name="code" 
+                     value="{{ old('code', $course->code) }}"
+                     placeholder="CRS-001"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('code') border-red-300 @enderror"
+                     style="font-family: Arial, sans-serif;"
+                     required>
+              @error('code')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+              @enderror
+              <small class="text-gray-500">معرف قصير للدورة</small>
+            </div>
+            
+            <div>
               <label for="description" class="block text-gray-700 mb-2">الوصف</label>
               <textarea id="description" 
                         name="description" 
@@ -236,91 +252,6 @@
             </div>
           </div>
 
-          <!-- Learning Paths -->
-          <div class="space-y-6">
-            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
-              <i class="ti ti-route mr-2 text-green-500"></i>
-              مسارات التعلم
-            </h3>
-            
-            <div>
-              <label for="learning_path_ids" class="block text-sm font-medium text-gray-700 mb-2">مسارات التعلم</label>
-              @php($selectedPaths = collect(old('learning_path_ids', $course->learningPaths->pluck('id')->all())))
-              
-              <!-- Custom Multi-Select Container -->
-              <div class="relative">
-                <div id="learning-path-selector" 
-                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm cursor-pointer @error('learning_path_ids') border-red-300 @enderror"
-                     onclick="toggleLearningPathDropdown()">
-                  <div class="flex items-center justify-between">
-                    <div class="flex flex-wrap gap-2">
-                      @if($selectedPaths->count() > 0)
-                        @foreach($selectedPaths as $pathId)
-                          @php($path = $learningPaths->firstWhere('id', $pathId))
-                          @if($path)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              {{ $path->name }}
-                              <button type="button" 
-                                      class="mr-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-green-200 transition-colors duration-200"
-                                      onclick="removeLearningPath({{ $pathId }}, event)">
-                                <i class="ti ti-x text-xs"></i>
-                              </button>
-                            </span>
-                          @endif
-                        @endforeach
-                      @else
-                        <span class="text-gray-500">اختر المسارات</span>
-                      @endif
-                    </div>
-                    <i class="ti ti-chevron-down text-gray-400 transition-transform duration-200" id="learning-path-dropdown-icon"></i>
-                  </div>
-                </div>
-                
-                <!-- Hidden select for form submission -->
-                <select id="learning_path_ids" 
-                        name="learning_path_ids[]" 
-                        multiple 
-                        class="hidden">
-                  @foreach($learningPaths as $path)
-                    <option value="{{ $path->id }}" @selected($selectedPaths->contains($path->id))>{{ $path->name }}</option>
-                  @endforeach
-                </select>
-                
-                <!-- Dropdown Menu -->
-                <div id="learning-path-dropdown" 
-                     class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-y-auto hidden">
-                  <div class="p-2">
-                    <div class="relative mb-2">
-                      <input type="text" 
-                             id="learning-path-search" 
-                             placeholder="ابحث عن مسار..."
-                             class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                             onkeyup="filterLearningPaths(this.value)">
-                    </div>
-                    <div id="learning-path-options">
-                      @foreach($learningPaths as $path)
-                        <div class="learning-path-option flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors duration-200"
-                             data-path-id="{{ $path->id }}"
-                             data-path-name="{{ $path->name }}"
-                             onclick="toggleLearningPath({{ $path->id }}, '{{ $path->name }}')">
-                          <input type="checkbox" 
-                                 class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                                 {{ $selectedPaths->contains($path->id) ? 'checked' : '' }}
-                                 data-path-id="{{ $path->id }}">
-                          <span class="mr-2 text-sm text-gray-900">{{ $path->name }}</span>
-                        </div>
-                      @endforeach
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              @error('learning_path_ids')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-              @enderror
-              <p class="mt-1 text-sm text-gray-500">اختر المسارات التي ستكون جزءاً من هذه الدورة</p>
-            </div>
-          </div>
 
           <!-- Image Upload -->
           <div class="space-y-6">
@@ -498,112 +429,6 @@
 </style>
 
 <script>
-  // Learning Paths Dropdown Functions
-  function toggleLearningPathDropdown() {
-    const dropdown = document.getElementById('learning-path-dropdown');
-    const icon = document.getElementById('learning-path-dropdown-icon');
-    
-    if (dropdown.classList.contains('hidden')) {
-      dropdown.classList.remove('hidden');
-      icon.style.transform = 'rotate(180deg)';
-    } else {
-      dropdown.classList.add('hidden');
-      icon.style.transform = 'rotate(0deg)';
-    }
-  }
-
-  function toggleLearningPath(pathId, pathName) {
-    const hiddenSelect = document.getElementById('learning_path_ids');
-    const checkbox = document.querySelector(`input[data-path-id="${pathId}"]`);
-    const selector = document.getElementById('learning-path-selector');
-    
-    if (checkbox.checked) {
-      // Remove from selection
-      checkbox.checked = false;
-      const option = hiddenSelect.querySelector(`option[value="${pathId}"]`);
-      if (option) option.remove();
-      
-      // Remove from UI
-      const tag = selector.querySelector(`span:contains("${pathName}")`);
-      if (tag) tag.remove();
-    } else {
-      // Add to selection
-      checkbox.checked = true;
-      const option = document.createElement('option');
-      option.value = pathId;
-      option.textContent = pathName;
-      option.selected = true;
-      hiddenSelect.appendChild(option);
-      
-      // Add to UI
-      const tagContainer = selector.querySelector('.flex.flex-wrap.gap-2');
-      const placeholder = tagContainer.querySelector('.text-gray-500');
-      if (placeholder) placeholder.remove();
-      
-      const tag = document.createElement('span');
-      tag.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
-      tag.innerHTML = `
-        ${pathName}
-        <button type="button" 
-                class="mr-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-green-200 transition-colors duration-200"
-                onclick="removeLearningPath(${pathId}, event)">
-          <i class="ti ti-x text-xs"></i>
-        </button>
-      `;
-      tagContainer.appendChild(tag);
-    }
-  }
-
-  function removeLearningPath(pathId, event) {
-    event.stopPropagation();
-    
-    const hiddenSelect = document.getElementById('learning_path_ids');
-    const checkbox = document.querySelector(`input[data-path-id="${pathId}"]`);
-    const option = hiddenSelect.querySelector(`option[value="${pathId}"]`);
-    
-    if (option) option.remove();
-    if (checkbox) checkbox.checked = false;
-    
-    // Remove from UI
-    const tag = event.target.closest('span');
-    if (tag) tag.remove();
-    
-    // Show placeholder if no selections
-    const selector = document.getElementById('learning-path-selector');
-    const tagContainer = selector.querySelector('.flex.flex-wrap.gap-2');
-    if (tagContainer.children.length === 0) {
-      const placeholder = document.createElement('span');
-      placeholder.className = 'text-gray-500';
-      placeholder.textContent = 'اختر المسارات';
-      tagContainer.appendChild(placeholder);
-    }
-  }
-
-  function filterLearningPaths(searchTerm) {
-    const options = document.querySelectorAll('.learning-path-option');
-    const term = searchTerm.toLowerCase();
-    
-    options.forEach(option => {
-      const name = option.querySelector('span').textContent.toLowerCase();
-      if (name.includes(term)) {
-        option.style.display = 'flex';
-      } else {
-        option.style.display = 'none';
-      }
-    });
-  }
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('learning-path-dropdown');
-    const selector = document.getElementById('learning-path-selector');
-    
-    if (!selector.contains(event.target) && !dropdown.contains(event.target)) {
-      dropdown.classList.add('hidden');
-      document.getElementById('learning-path-dropdown-icon').style.transform = 'rotate(0deg)';
-    }
-  });
-
   window.addEventListener('DOMContentLoaded', function () {
     // Auto-hide notifications after 5 seconds
     setTimeout(function() {

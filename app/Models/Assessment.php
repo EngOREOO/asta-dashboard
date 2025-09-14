@@ -18,6 +18,7 @@ class Assessment extends Model
         'duration_minutes',
         'max_attempts',
         'passing_score',
+        'total_questions',
         'is_active',
         'randomize_questions',
         'show_results_immediately',
@@ -30,6 +31,7 @@ class Assessment extends Model
         'duration_minutes' => 'integer',
         'max_attempts' => 'integer',
         'passing_score' => 'integer',
+        'total_questions' => 'integer',
     ];
 
     public function course()

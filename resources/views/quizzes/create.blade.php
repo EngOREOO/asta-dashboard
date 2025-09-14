@@ -71,7 +71,7 @@
           </div>
 
           <div>
-            <label for="passing_score" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">مسار النجاح (%)</label>
+            <label for="passing_score" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">نسبة النجاح (%)</label>
             <input id="passing_score" name="passing_score" type="number" value="{{ old('passing_score') }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="0" max="100" step="0.01">
             @error('passing_score')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
           </div>
@@ -91,7 +91,7 @@
           <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
             <label class="inline-flex items-center gap-2">
               <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-              <span style="font-size: 1.3rem;">مفعل</span>
+              <span style="font-size: 1.3rem;">نشط</span>
             </label>
             <label class="inline-flex items-center gap-2">
               <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="randomize_questions" name="randomize_questions" value="1" {{ old('randomize_questions') ? 'checked' : '' }}>

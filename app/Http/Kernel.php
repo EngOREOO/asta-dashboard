@@ -70,5 +70,7 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\CheckRole::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        'dashboard.access' => \App\Http\Middleware\CheckDashboardAccess::class,
+        'session.timeout' => \App\Http\Middleware\SessionTimeout::class,
     ];
 }

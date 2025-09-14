@@ -49,6 +49,7 @@ class DashboardController extends Controller
         $totalQuizzes = 0;
         $totalReviews = 0;
         $totalTestimonials = 0;
+        $activeUsersCount = 0;
         $approvedTestimonials = 0;
         $pendingTestimonials = 0;
         $featuredTestimonials = 0;
@@ -68,6 +69,9 @@ class DashboardController extends Controller
             $totalNotes = CourseNote::count();
             $totalDegrees = Degree::count();
             $totalQuizzes = Quiz::count();
+
+            // Active users count
+            $activeUsersCount = $this->getActiveUsersCount();
 
             // Testimonials statistics
             $totalTestimonials = Testimonial::count();
@@ -117,6 +121,7 @@ class DashboardController extends Controller
             'totalDegrees' => $totalDegrees,
             'totalQuizzes' => $totalQuizzes,
             'totalReviews' => $totalReviews,
+            'activeUsersCount' => $activeUsersCount,
             'totalTestimonials' => $totalTestimonials,
             'approvedTestimonials' => $approvedTestimonials,
             'pendingTestimonials' => $pendingTestimonials,
@@ -201,5 +206,22 @@ class DashboardController extends Controller
     {
         // Implement instructor-specific activity logging and retrieval
         return [];
+    }
+
+    private function getActiveUsersCount()
+    {
+        $timeout = config('session.timeout', 30);
+        $cutoffTime = time() - ($timeout * 60);
+        
+        if (config('session.driver') === 'database') {
+            return DB::table('sessions')
+                ->where('last_activity', '>', $cutoffTime)
+                ->whereNotNull('user_id')
+                ->distinct('user_id')
+                ->count('user_id');
+        }
+        
+        // For file-based sessions, return 0
+        return 0;
     }
 }

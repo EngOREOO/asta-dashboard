@@ -30,16 +30,17 @@
       <div class="p-8">
         <?php if($certificates->count() > 0): ?>
         <div class="admin-table-container">
-          <table class="admin-table" id="certificates-table" style="font-size: 1.15rem;">
+          <table class="admin-table" id="certificates-table" style="font-size: 1.3rem;">
             <thead class="bg-gray-50">
               <tr>
-                <th>#</th>
-                <th>الطالب</th>
-                <th>الدورة</th>
-                <th>المحاضر</th>
-                <th>تاريخ الإصدار</th>
-                <th>الحالة</th>
-                <th>الإجراءات</th>
+                <th style="font-size: 1.3rem;">#</th>
+                <th style="font-size: 1.3rem;">الطالب</th>
+                <th style="font-size: 1.3rem;">الدورة</th>
+                <th style="font-size: 1.3rem;">رمز الشهادة</th>
+                <th style="font-size: 1.3rem;">المحاضر</th>
+                <th style="font-size: 1.3rem;">تاريخ الإصدار</th>
+                <th style="font-size: 1.3rem;">الحالة</th>
+                <th style="font-size: 1.3rem;">الإجراءات</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -71,6 +72,12 @@
                   —
                 <?php endif; ?>
               </div>
+            </td>
+            <td class="text-ltr">
+              <span class="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-gray-800" style="font-family: Arial, sans-serif;">
+                <?php echo e($certificate->code ?? '—'); ?>
+
+              </span>
             </td>
             <td><?php echo e(optional($certificate->course->instructor)->name ?? '—'); ?></td>
             <td><?php echo e($certificate->issued_at ? \Carbon\Carbon::parse($certificate->issued_at)->format('Y-n-j') : '—'); ?></td>

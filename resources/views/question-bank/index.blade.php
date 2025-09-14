@@ -1,0 +1,158 @@
+@php
+    $title = 'بنك الأسئلة';
+@endphp
+@extends('layouts.dash')
+@section('content')
+<div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 font-arabic">
+  <div class="space-y-8 p-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between animate-fade-in">
+      <div class="space-y-2">
+        <h1 class="font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent" style="font-size: 1.9rem;">بنك الأسئلة</h1>
+        <p class="text-gray-600" style="font-size: 1.3rem;">إدارة جميع الأسئلة في النظام</p>
+      </div>
+      <div class="mt-4 sm:mt-0">
+        <a href="{{ route('question-bank.create') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-600 text-white rounded-2xl hover:from-teal-600 hover:to-cyan-700 shadow-lg transition-all duration-300" style="font-size: 1.3rem;">
+          <i class="ti ti-plus mr-2"></i>
+          إضافة سؤال جديد
+        </a>
+      </div>
+    </div>
+
+    @if(session('success'))
+      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl" style="font-size: 1.3rem;">
+        {{ session('success') }}
+      </div>
+    @endif
+
+    <div class="bg-white/70 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/20 animate-slide-up">
+      <div class="bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-600 px-8 py-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20"></div>
+        <div class="relative z-10">
+          <h2 class="font-bold text-white flex items-center" style="font-size: 1.9rem;">
+            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mr-4 backdrop-blur-sm">
+              <i class="ti ti-database text-white text-xl"></i>
+            </div>
+            قائمة الأسئلة
+          </h2>
+        </div>
+      </div>
+
+      <div class="p-8">
+        @if($questions->count() > 0)
+          <div class="overflow-x-auto">
+            <table class="w-full text-right" style="font-size: 1.3rem;">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">#</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">نص السؤال</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">النوع</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">الدرجات</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">المستوى</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">التقييم</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">تاريخ الإنشاء</th>
+                  <th class="px-6 py-4 text-right font-semibold text-gray-700">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                @foreach($questions as $index => $question)
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                  <td class="px-6 py-4 text-gray-700">{{ $questions->firstItem() + $index }}</td>
+                  <td class="px-6 py-4">
+                    <div class="max-w-xs truncate" title="{{ $question->question }}">
+                      {{ Str::limit($question->question, 50) }}
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    @php
+                      $typeLabels = [
+                        'mcq' => 'اختيارات متعددة',
+                        'text' => 'نصي',
+                      ];
+                      $typeLabel = $typeLabels[$question->type] ?? $question->type;
+                    @endphp
+                    <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium
+                      {{ $question->type === 'mcq' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                      {{ $typeLabel }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-gray-700">{{ $question->points ?? '-' }}</td>
+                  <td class="px-6 py-4">
+                    @if($question->difficulty)
+                      @php
+                        $difficultyLabels = [
+                          'easy' => 'سهل',
+                          'medium' => 'متوسط',
+                          'hard' => 'صعب',
+                        ];
+                        $difficultyLabel = $difficultyLabels[$question->difficulty] ?? $question->difficulty;
+                        $difficultyColors = [
+                          'easy' => 'bg-green-100 text-green-800',
+                          'medium' => 'bg-yellow-100 text-yellow-800',
+                          'hard' => 'bg-red-100 text-red-800',
+                        ];
+                        $difficultyColor = $difficultyColors[$question->difficulty] ?? 'bg-gray-100 text-gray-800';
+                      @endphp
+                      <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium {{ $difficultyColor }}">
+                        {{ $difficultyLabel }}
+                      </span>
+                    @else
+                      <span class="text-gray-400">-</span>
+                    @endif
+                  </td>
+                  <td class="px-6 py-4">
+                    @if($question->assessment)
+                      <a href="{{ route('assessments.show', $question->assessment) }}" class="text-blue-600 hover:text-blue-800">
+                        {{ $question->assessment->title }}
+                      </a>
+                    @else
+                      <span class="text-gray-400">بنك الأسئلة</span>
+                    @endif
+                  </td>
+                  <td class="px-6 py-4 text-gray-500">{{ $question->created_at->format('Y-m-d') }}</td>
+                  <td class="px-6 py-4">
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                      <a href="{{ route('question-bank.show', $question) }}" class="inline-flex items-center px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors duration-200" style="font-size: 1.1rem;">
+                        <i class="ti ti-eye mr-1"></i>
+                        عرض
+                      </a>
+                      <a href="{{ route('question-bank.edit', $question) }}" class="inline-flex items-center px-3 py-2 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-xl hover:bg-yellow-100 transition-colors duration-200" style="font-size: 1.1rem;">
+                        <i class="ti ti-edit mr-1"></i>
+                        تعديل
+                      </a>
+                      <form method="POST" action="{{ route('question-bank.destroy', $question) }}" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا السؤال؟')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="inline-flex items-center px-3 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl hover:bg-red-100 transition-colors duration-200" style="font-size: 1.1rem;">
+                          <i class="ti ti-trash mr-1"></i>
+                          حذف
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-6">
+            {{ $questions->links() }}
+          </div>
+        @else
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="ti ti-database text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2" style="font-size: 1.5rem;">لا توجد أسئلة بعد</h3>
+            <p class="text-gray-500 mb-6" style="font-size: 1.3rem;">ابدأ بإضافة أول سؤال إلى بنك الأسئلة</p>
+            <a href="{{ route('question-bank.create') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-600 text-white rounded-2xl hover:from-teal-600 hover:to-cyan-700 shadow-lg transition-all duration-300" style="font-size: 1.3rem;">
+              <i class="ti ti-plus mr-2"></i>
+              إضافة سؤال جديد
+            </a>
+          </div>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
+@endsection

@@ -46,9 +46,9 @@
           </div>
 
           <div>
-            <label for="level" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المستوى *</label>
+            <label for="level" class="block text-gray-700 mb-2" style="font-size: 1.3rem;"> المستوي المهني *</label>
             <select id="level" name="level" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" required>
-              <option value="">اختر المستوى</option>
+              <option value="">اختر المستوي المهني</option>
               @foreach(($careerLevels ?? collect()) as $cl)
                 <option value="{{ $cl->id }}" {{ old('level') == $cl->id ? 'selected' : '' }}>{{ $cl->name }}</option>
               @endforeach
@@ -75,8 +75,40 @@
             @error('description')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
           </div>
 
+          <div class="md:col-span-3">
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الدورات التدريبية</label>
+            <div class="relative">
+              <div class="multiselect-dropdown border border-gray-300 rounded-xl bg-white">
+                <div class="dropdown-trigger flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 rounded-xl">
+                  <div class="selected-items flex flex-wrap gap-1">
+                    <span class="placeholder text-gray-500" style="font-size: 1.2rem;">اختر الدورات...</span>
+                  </div>
+                  <i class="ti ti-chevron-down text-gray-400"></i>
+                </div>
+                <div class="dropdown-content hidden absolute z-50 w-full bg-white border border-gray-300 rounded-xl shadow-lg mt-1 max-h-64 overflow-y-auto">
+                  <div class="p-2 border-b border-gray-200">
+                    <input type="text" class="search-input w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="البحث في الدورات..." style="font-size: 1.2rem;">
+                  </div>
+                  <div class="course-list">
+                    @foreach($courses as $course)
+                      <label class="flex items-center p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+                        <input type="checkbox" name="courses[]" value="{{ $course->id }}" 
+                               {{ in_array($course->id, old('courses', [])) ? 'checked' : '' }}
+                               class="course-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3">
+                        <span class="course-title" style="font-size: 1.2rem;">{{ $course->title }}</span>
+                      </label>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+            </div>
+            <small class="text-gray-500">انقر لفتح قائمة الدورات واختر ما تريد</small>
+            @error('courses')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            @error('courses.*')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
+
           <div class="md:col-span-2">
-            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">مفعل</label>
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">نشط</label>
             <label class="inline-flex items-center gap-2">
               <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
               <span style="font-size: 1.3rem;">نشط</span>
@@ -92,4 +124,119 @@
     </div>
   </div>
 </div>
+
+<style>
+.multiselect-dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.selected-item {
+  background: #3b82f6;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  margin: 2px;
+}
+
+.selected-item .remove {
+  margin-right: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.selected-item .remove:hover {
+  color: #fbbf24;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdown = document.querySelector('.multiselect-dropdown');
+  const trigger = dropdown.querySelector('.dropdown-trigger');
+  const content = dropdown.querySelector('.dropdown-content');
+  const searchInput = dropdown.querySelector('.search-input');
+  const courseList = dropdown.querySelector('.course-list');
+  const selectedItemsContainer = dropdown.querySelector('.selected-items');
+  const placeholder = dropdown.querySelector('.placeholder');
+  
+  const courses = Array.from(dropdown.querySelectorAll('.course-checkbox')).map(checkbox => ({
+    id: checkbox.value,
+    title: checkbox.nextElementSibling.textContent.trim(),
+    checkbox: checkbox
+  }));
+  
+  // Toggle dropdown
+  trigger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    content.classList.toggle('show');
+    if (content.classList.contains('show')) {
+      searchInput.focus();
+    }
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target)) {
+      content.classList.remove('show');
+    }
+  });
+  
+  // Search functionality
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    courses.forEach(course => {
+      const isVisible = course.title.toLowerCase().includes(searchTerm);
+      course.checkbox.closest('label').style.display = isVisible ? 'flex' : 'none';
+    });
+  });
+  
+  // Handle checkbox changes
+  courses.forEach(course => {
+    course.checkbox.addEventListener('change', function() {
+      updateSelectedItems();
+    });
+  });
+  
+  // Update selected items display
+  function updateSelectedItems() {
+    const selectedCourses = courses.filter(course => course.checkbox.checked);
+    
+    if (selectedCourses.length === 0) {
+      placeholder.style.display = 'block';
+      selectedItemsContainer.innerHTML = '<span class="placeholder text-gray-500" style="font-size: 1.2rem;">اختر الدورات...</span>';
+    } else {
+      placeholder.style.display = 'none';
+      selectedItemsContainer.innerHTML = selectedCourses.map(course => 
+        `<span class="selected-item">
+          <span class="remove" onclick="removeCourse(${course.id})">&times;</span>
+          ${course.title}
+        </span>`
+      ).join('');
+    }
+  }
+  
+  // Remove course function
+  window.removeCourse = function(courseId) {
+    const course = courses.find(c => c.id == courseId);
+    if (course) {
+      course.checkbox.checked = false;
+      updateSelectedItems();
+    }
+  };
+  
+  // Initialize display
+  updateSelectedItems();
+});
+</script>
 @endsection

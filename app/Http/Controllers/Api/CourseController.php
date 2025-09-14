@@ -25,8 +25,15 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Course::with(['instructor', 'category', 'degree'])
-            ->where('status', 'approved'); // Only approved by default
+        $query = Course::with(['instructor', 'category', 'degree']);
+
+        // Filter by status - if no status specified, show all courses
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Show all courses by default (draft, pending, approved)
+            $query->whereIn('status', ['draft', 'pending', 'approved']);
+        }
 
         // ===== Filter: my_comments (courses I commented on) =====
         if ($request->boolean('my_comments')) {
@@ -93,13 +100,19 @@ class CourseController extends Controller
     /**
      * Get recently added courses
      */
-    public function recent()
+    public function recent(Request $request)
     {
-        $courses = Course::with(['instructor', 'category', 'degree'])
-            ->where('status', 'approved')
-            ->latest()
-            ->take(10)
-            ->get();
+        $query = Course::with(['instructor', 'category', 'degree']);
+
+        // Filter by status - if no status specified, show all courses
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Show all courses by default (draft, pending, approved)
+            $query->whereIn('status', ['draft', 'pending', 'approved']);
+        }
+
+        $courses = $query->latest()->take(10)->get();
 
         return response()->json($courses);
     }
@@ -107,11 +120,19 @@ class CourseController extends Controller
     /**
      * Get top rated courses
      */
-    public function topRated()
+    public function topRated(Request $request)
     {
-        $courses = Course::with(['instructor', 'category', 'degree'])
-            ->where('status', 'approved')
-            ->where('average_rating', '>=', 4.0) // Only highly rated courses
+        $query = Course::with(['instructor', 'category', 'degree']);
+
+        // Filter by status - if no status specified, show all courses
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Show all courses by default (draft, pending, approved)
+            $query->whereIn('status', ['draft', 'pending', 'approved']);
+        }
+
+        $courses = $query->where('average_rating', '>=', 4.0) // Only highly rated courses
             ->orderBy('average_rating', 'desc')
             ->orderBy('total_ratings', 'desc')
             ->take(10)
@@ -123,11 +144,19 @@ class CourseController extends Controller
     /**
      * Get free courses
      */
-    public function free()
+    public function free(Request $request)
     {
-        $courses = Course::with(['instructor', 'category', 'degree'])
-            ->where('status', 'approved')
-            ->where('price', 0)
+        $query = Course::with(['instructor', 'category', 'degree']);
+
+        // Filter by status - if no status specified, show all courses
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Show all courses by default (draft, pending, approved)
+            $query->whereIn('status', ['draft', 'pending', 'approved']);
+        }
+
+        $courses = $query->where('price', 0)
             ->latest()
             ->take(10)
             ->get();
@@ -138,11 +167,19 @@ class CourseController extends Controller
     /**
      * Get most popular courses based on enrollment
      */
-    public function popular()
+    public function popular(Request $request)
     {
-        $courses = Course::with(['instructor', 'category', 'degree'])
-            ->where('status', 'approved')
-            ->withCount('students')
+        $query = Course::with(['instructor', 'category', 'degree']);
+
+        // Filter by status - if no status specified, show all courses
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Show all courses by default (draft, pending, approved)
+            $query->whereIn('status', ['draft', 'pending', 'approved']);
+        }
+
+        $courses = $query->withCount('students')
             ->orderBy('students_count', 'desc')
             ->take(10)
             ->get();
@@ -159,8 +196,8 @@ class CourseController extends Controller
             'thumbnail' => 'nullable|image|max:2048',
             'degree_id' => 'nullable|exists:degrees,id',
             'category_id' => 'required|exists:categories,id',
-            'learning_path_ids' => 'sometimes|array',
-            'learning_path_ids.*' => 'integer|exists:learning_paths,id',
+            // 'learning_path_ids' => 'sometimes|array',
+            // 'learning_path_ids.*' => 'integer|exists:learning_paths,id',
         ]);
 
         $course = Course::create($validated);
@@ -458,11 +495,102 @@ class CourseController extends Controller
             ],
         ];
 
+        // Prepare course metadata
+        $metadata = [
+            'code' => $course->code,
+            'is_featured' => $course->is_featured ?? false,
+            'status' => $course->status,
+            'created_at' => $course->created_at->toISOString(),
+            'updated_at' => $course->updated_at->toISOString(),
+            'published_at' => $course->created_at->toISOString(), // Assuming created_at as published
+        ];
+
+        // Prepare course settings
+        $settings = [
+            'allow_comments' => $course->allow_comments ?? false,
+            'allow_notes' => $course->allow_notes ?? false,
+            'allow_ratings' => $course->allow_ratings ?? false,
+            'difficulty_level' => $course->difficulty_level ?? 'intermediate',
+            'language' => $course->language ?? 'Arabic',
+            'estimated_duration' => $course->estimated_duration ?? $totalDuration,
+        ];
+
+        // Prepare course details
+        $details = [
+            'overview' => $course->overview,
+            'prerequisites' => $course->prerequisites,
+            'learning_objectives' => $course->learning_objectives,
+            'target_audience' => $course->target_audience,
+            'description' => $course->description,
+        ];
+
+        // Prepare pricing information
+        $pricing = [
+            'price' => $course->price,
+            'is_free' => $course->price == 0,
+            'discounted_price' => $course->discounted_price,
+            'currency' => 'SAR', // Assuming Saudi Riyal
+            'has_discount' => $course->discounted_price < $course->price,
+        ];
+
+        // Prepare category and degree information
+        $categoryInfo = $course->category ? [
+            'id' => $course->category->id,
+            'name' => $course->category->name,
+            'slug' => $course->category->slug ?? null,
+            'description' => $course->category->description ?? null,
+        ] : null;
+
+        $degreeInfo = $course->degree ? [
+            'id' => $course->degree->id,
+            'name' => $course->degree->name,
+            'name_ar' => $course->degree->name_ar ?? null,
+            'provider' => $course->degree->provider ?? null,
+            'level' => $course->degree->level ?? null,
+            'description' => $course->degree->description ?? null,
+        ] : null;
+
+        // Prepare learning paths
+        $learningPaths = $course->learningPaths ? $course->learningPaths->map(function ($lp) {
+            return [
+                'id' => $lp->id,
+                'name' => $lp->name,
+                'slug' => $lp->slug,
+                'description' => $lp->description ?? null,
+                'order' => $lp->pivot->order ?? null,
+            ];
+        }) : [];
+
+        // Prepare course analytics
+        $analytics = [
+            'total_enrollments' => $course->students()->count(),
+            'completion_rate' => $this->calculateCompletionRate($course),
+            'average_completion_time' => $this->calculateAverageCompletionTime($course),
+            'dropout_rate' => $this->calculateDropoutRate($course),
+            'engagement_score' => $this->calculateEngagementScore($course),
+        ];
+
+        // Prepare course requirements
+        $requirements = [
+            'prerequisites_met' => $this->checkPrerequisitesMet($course, $user),
+            'enrollment_required' => true,
+            'completion_criteria' => 'Complete all lessons and pass assessments',
+        ];
+
+        // Prepare related courses
+        $relatedCourses = $this->getRelatedCourses($course);
+
+        // Prepare lessons and materials for easy access
+        $lessons = $this->prepareLessonsData($course, $user);
+        $materials = $this->prepareMaterialsData($course, $user);
+
         return response()->json([
             'course' => [
                 'id' => 'course_'.$course->id,
                 'title' => $course->title,
                 'slug' => $course->slug,
+                'code' => $course->code,
+                'thumbnail' => $course->thumbnail_url,
                 'total_progress' => $totalProgress.'%',
                 'instructor' => $instructorInfo,
                 'overview' => $overview,
@@ -472,6 +600,18 @@ class CourseController extends Controller
                 'ratings' => $ratings,
                 'comments' => $comments,
                 'filters' => $filters,
+                'metadata' => $metadata,
+                'settings' => $settings,
+                'details' => $details,
+                'pricing' => $pricing,
+                'category' => $categoryInfo,
+                'degree' => $degreeInfo,
+                // 'learning_paths' => $learningPaths,
+                'analytics' => $analytics,
+                'requirements' => $requirements,
+                'related_courses' => $relatedCourses,
+                'lessons' => $lessons,
+                'materials' => $materials,
             ],
         ]);
     }
@@ -1275,13 +1415,13 @@ class CourseController extends Controller
                     'learning_objectives' => $course->learning_objectives,
                     'target_audience' => $course->target_audience,
                 ],
-                'learning_paths' => $course->learningPaths ? $course->learningPaths->map(function ($lp) {
-                    return [
-                        'id' => $lp->id,
-                        'name' => $lp->name,
-                        'slug' => $lp->slug,
-                    ];
-                }) : [],
+                // 'learning_paths' => $course->learningPaths ? $course->learningPaths->map(function ($lp) {
+                //     return [
+                //         'id' => $lp->id,
+                //         'name' => $lp->name,
+                //         'slug' => $lp->slug,
+                //     ];
+                // }) : [],
                 'recent_reviews' => $course->reviews->take(3)->map(function ($review) {
                     return [
                         'id' => $review->id,
@@ -1905,6 +2045,358 @@ class CourseController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Calculate course completion rate
+     */
+    private function calculateCompletionRate($course)
+    {
+        $totalEnrollments = $course->students()->count();
+        if ($totalEnrollments === 0) {
+            return 0;
+        }
+
+        $completedEnrollments = $course->students()
+            ->wherePivot('completed_at', '!=', null)
+            ->count();
+
+        return round(($completedEnrollments / $totalEnrollments) * 100, 2);
+    }
+
+    /**
+     * Calculate average completion time
+     */
+    private function calculateAverageCompletionTime($course)
+    {
+        $completedEnrollments = $course->students()
+            ->wherePivot('completed_at', '!=', null)
+            ->wherePivot('enrolled_at', '!=', null)
+            ->get();
+
+        if ($completedEnrollments->isEmpty()) {
+            return 0;
+        }
+
+        $totalDays = $completedEnrollments->sum(function ($enrollment) {
+            $enrolledAt = $enrollment->pivot->enrolled_at;
+            $completedAt = $enrollment->pivot->completed_at;
+            return $enrolledAt && $completedAt ? $enrolledAt->diffInDays($completedAt) : 0;
+        });
+
+        return round($totalDays / $completedEnrollments->count(), 1);
+    }
+
+    /**
+     * Calculate dropout rate
+     */
+    private function calculateDropoutRate($course)
+    {
+        $totalEnrollments = $course->students()->count();
+        if ($totalEnrollments === 0) {
+            return 0;
+        }
+
+        $completedEnrollments = $course->students()
+            ->wherePivot('completed_at', '!=', null)
+            ->count();
+
+        $dropouts = $totalEnrollments - $completedEnrollments;
+        return round(($dropouts / $totalEnrollments) * 100, 2);
+    }
+
+    /**
+     * Calculate engagement score based on comments, notes, and ratings
+     */
+    private function calculateEngagementScore($course)
+    {
+        $commentsCount = $course->comments()->count();
+        $notesCount = $course->notes()->count();
+        $ratingsCount = $course->ratings()->count();
+        $enrollmentsCount = $course->students()->count();
+
+        if ($enrollmentsCount === 0) {
+            return 0;
+        }
+
+        $engagementScore = (($commentsCount * 2) + ($notesCount * 3) + ($ratingsCount * 1)) / $enrollmentsCount;
+        return round(min($engagementScore, 100), 2); // Cap at 100
+    }
+
+    /**
+     * Check if user meets course prerequisites
+     */
+    private function checkPrerequisitesMet($course, $user)
+    {
+        if (!$user) {
+            return false;
+        }
+
+        // This is a simplified check - you can implement more complex prerequisite logic
+        $prerequisites = $course->prerequisites;
+        if (!$prerequisites) {
+            return true;
+        }
+
+        // For now, return true - implement actual prerequisite checking logic here
+        return true;
+    }
+
+    /**
+     * Get related courses based on category, instructor, or similar content
+     */
+    private function getRelatedCourses($course)
+    {
+        $relatedCourses = collect();
+
+        // Get courses from same category
+        if ($course->category_id) {
+            $categoryCourses = Course::where('category_id', $course->category_id)
+                ->where('id', '!=', $course->id)
+                ->where('status', 'approved')
+                ->with(['instructor:id,name,profile_photo_path', 'category:id,name'])
+                ->limit(3)
+                ->get();
+
+            $relatedCourses = $relatedCourses->merge($categoryCourses);
+        }
+
+        // Get courses from same instructor
+        if ($course->instructor_id) {
+            $instructorCourses = Course::where('instructor_id', $course->instructor_id)
+                ->where('id', '!=', $course->id)
+                ->where('status', 'approved')
+                ->with(['instructor:id,name,profile_photo_path', 'category:id,name'])
+                ->limit(3)
+                ->get();
+
+            $relatedCourses = $relatedCourses->merge($instructorCourses);
+        }
+
+        // Remove duplicates and limit to 6 courses
+        $relatedCourses = $relatedCourses->unique('id')->take(6);
+
+        return $relatedCourses->map(function ($relatedCourse) {
+            return [
+                'id' => $relatedCourse->id,
+                'title' => $relatedCourse->title,
+                'slug' => $relatedCourse->slug,
+                'thumbnail' => $relatedCourse->thumbnail_url,
+                'price' => $relatedCourse->price,
+                'instructor' => $relatedCourse->instructor ? [
+                    'id' => $relatedCourse->instructor->id,
+                    'name' => $relatedCourse->instructor->name,
+                    'avatar' => $relatedCourse->instructor->profile_photo_url,
+                ] : null,
+                'category' => $relatedCourse->category ? [
+                    'id' => $relatedCourse->category->id,
+                    'name' => $relatedCourse->category->name,
+                ] : null,
+                'average_rating' => $relatedCourse->average_rating ?? 0,
+                'total_ratings' => $relatedCourse->total_ratings ?? 0,
+            ];
+        });
+    }
+
+    /**
+     * Prepare lessons data for API response
+     */
+    private function prepareLessonsData($course, $user)
+    {
+        $lessons = collect();
+
+        // Get lessons from levels
+        foreach ($course->levels as $level) {
+            foreach ($level->materials as $material) {
+                $lessonData = [
+                    'id' => 'lesson_'.$level->id.'_'.$material->id,
+                    'level_id' => $level->id,
+                    'level_name' => $level->level_name,
+                    'material_id' => $material->id,
+                    'type' => $this->getLessonType($material),
+                    'title' => $material->title,
+                    'description' => $material->description,
+                    'order' => $material->order,
+                    'duration' => $material->duration ?? 0,
+                    'duration_formatted' => $this->formatDuration($material->duration ?? 0),
+                    'is_free' => $material->is_free ?? false,
+                    'file_path' => $material->file_path,
+                    'file_size' => $material->file_size,
+                    'created_at' => $material->created_at->toISOString(),
+                    'updated_at' => $material->updated_at->toISOString(),
+                ];
+
+                // Add video information if it's a video
+                if ($material->type === 'video') {
+                    $lessonData['video'] = [
+                        'url' => $material->file_path ? asset($material->file_path) : null,
+                        'poster' => $course->thumbnail ? asset($course->thumbnail) : null,
+                        'duration_seconds' => $material->duration ?? 0,
+                    ];
+
+                    // Add in-video quizzes if they exist
+                    if ($material->inVideoQuizzes && $material->inVideoQuizzes->isNotEmpty()) {
+                        $lessonData['in_video_quizzes'] = $this->formatInVideoQuizzes($material->inVideoQuizzes);
+                    }
+                }
+
+                // Add quiz information if it's a quiz
+                if ($material->type === 'quiz' || ($material->quizzes && $material->quizzes->isNotEmpty())) {
+                    $lessonData['quiz'] = $this->formatQuizData($material);
+                }
+
+                // Add file information for other types
+                if ($material->type === 'pdf' || $material->type === 'document') {
+                    $lessonData['file'] = [
+                        'url' => $material->file_path ? asset($material->file_path) : null,
+                        'size' => $material->file_size ?? 0,
+                        'type' => $material->type,
+                    ];
+                }
+
+                // Add progress information if user is enrolled
+                if ($user && $user->enrolledCourses()->where('course_id', $course->id)->exists()) {
+                    $isCompleted = CourseMaterialProgress::where('course_material_id', $material->id)
+                        ->where('user_id', $user->id)
+                        ->whereNotNull('completed_at')
+                        ->exists();
+
+                    $lessonData['progress'] = [
+                        'is_completed' => $isCompleted,
+                        'completed_at' => $isCompleted ? CourseMaterialProgress::where('course_material_id', $material->id)
+                            ->where('user_id', $user->id)
+                            ->whereNotNull('completed_at')
+                            ->first()?->completed_at?->toISOString() : null,
+                        'last_accessed' => CourseMaterialProgress::where('course_material_id', $material->id)
+                            ->where('user_id', $user->id)
+                            ->first()?->updated_at?->toISOString(),
+                    ];
+                } else {
+                    $lessonData['progress'] = [
+                        'is_completed' => false,
+                        'completed_at' => null,
+                        'last_accessed' => null,
+                    ];
+                }
+
+                $lessons->push($lessonData);
+            }
+        }
+
+        return $lessons->sortBy('order')->values();
+    }
+
+    /**
+     * Prepare materials data for API response
+     */
+    private function prepareMaterialsData($course, $user)
+    {
+        $materials = collect();
+
+        // Get all materials from the course
+        foreach ($course->materials as $material) {
+            $materialData = [
+                'id' => $material->id,
+                'title' => $material->title,
+                'description' => $material->description,
+                'type' => $material->type,
+                'order' => $material->order,
+                'duration' => $material->duration ?? 0,
+                'duration_formatted' => $this->formatDuration($material->duration ?? 0),
+                'is_free' => $material->is_free ?? false,
+                'file_path' => $material->file_path,
+                'file_size' => $material->file_size,
+                'file_size_formatted' => $this->formatFileSize($material->file_size ?? 0),
+                'level_id' => $material->level_id,
+                'level_name' => $material->level ? $material->level->level_name : null,
+                'created_at' => $material->created_at->toISOString(),
+                'updated_at' => $material->updated_at->toISOString(),
+            ];
+
+            // Add type-specific information
+            switch ($material->type) {
+                case 'video':
+                    $materialData['video'] = [
+                        'url' => $material->file_path ? asset($material->file_path) : null,
+                        'poster' => $course->thumbnail ? asset($course->thumbnail) : null,
+                        'duration_seconds' => $material->duration ?? 0,
+                    ];
+                    break;
+
+                case 'pdf':
+                case 'document':
+                    $materialData['file'] = [
+                        'url' => $material->file_path ? asset($material->file_path) : null,
+                        'size' => $material->file_size ?? 0,
+                        'type' => $material->type,
+                        'downloadable' => true,
+                    ];
+                    break;
+
+                case 'quiz':
+                    $materialData['quiz'] = $this->formatQuizData($material);
+                    break;
+            }
+
+            // Add progress information if user is enrolled
+            if ($user && $user->enrolledCourses()->where('course_id', $course->id)->exists()) {
+                $progress = CourseMaterialProgress::where('course_material_id', $material->id)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+                $materialData['progress'] = [
+                    'is_completed' => $progress && $progress->completed_at !== null,
+                    'completed_at' => $progress ? $progress->completed_at?->toISOString() : null,
+                    'last_accessed' => $progress ? $progress->updated_at?->toISOString() : null,
+                    'time_spent' => $progress ? $progress->time_spent : 0,
+                ];
+            } else {
+                $materialData['progress'] = [
+                    'is_completed' => false,
+                    'completed_at' => null,
+                    'last_accessed' => null,
+                    'time_spent' => 0,
+                ];
+            }
+
+            $materials->push($materialData);
+        }
+
+        return $materials->sortBy('order')->values();
+    }
+
+    /**
+     * Format duration in seconds to readable format
+     */
+    private function formatDuration($seconds)
+    {
+        if ($seconds < 60) {
+            return $seconds . 's';
+        } elseif ($seconds < 3600) {
+            $minutes = floor($seconds / 60);
+            $remainingSeconds = $seconds % 60;
+            return $minutes . 'm ' . $remainingSeconds . 's';
+        } else {
+            $hours = floor($seconds / 3600);
+            $minutes = floor(($seconds % 3600) / 60);
+            return $hours . 'h ' . $minutes . 'm';
+        }
+    }
+
+    /**
+     * Format file size in bytes to readable format
+     */
+    private function formatFileSize($bytes)
+    {
+        if ($bytes < 1024) {
+            return $bytes . ' B';
+        } elseif ($bytes < 1024 * 1024) {
+            return round($bytes / 1024, 2) . ' KB';
+        } elseif ($bytes < 1024 * 1024 * 1024) {
+            return round($bytes / (1024 * 1024), 2) . ' MB';
+        } else {
+            return round($bytes / (1024 * 1024 * 1024), 2) . ' GB';
+        }
     }
 
     /**

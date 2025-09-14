@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->string('code')->unique();
             $table->timestamp('issued_at')->nullable();
             $table->string('certificate_url')->nullable();
             $table->timestamps();

@@ -252,13 +252,34 @@ class QuizController extends Controller
                 ];
             });
 
+        // Calculate score ranges for distribution chart
+        $scoreRanges = [
+            '0-20' => 0,
+            '21-40' => 0,
+            '41-60' => 0,
+            '61-80' => 0,
+            '81-100' => 0
+        ];
+        
+        $attempts = $quiz->attempts()->whereNotNull('completed_at')->get();
+        foreach ($attempts as $attempt) {
+            $score = $attempt->score ?? 0;
+            if ($score <= 20) $scoreRanges['0-20']++;
+            elseif ($score <= 40) $scoreRanges['21-40']++;
+            elseif ($score <= 60) $scoreRanges['41-60']++;
+            elseif ($score <= 80) $scoreRanges['61-80']++;
+            else $scoreRanges['81-100']++;
+        }
+
         return view('quizzes.analytics', compact(
             'quiz', 
             'totalAttempts', 
             'completedAttempts', 
             'averageScore', 
             'passRate', 
-            'questionAnalytics'
+            'questionAnalytics',
+            'scoreRanges',
+            'attempts'
         ));
     }
 

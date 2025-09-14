@@ -46,6 +46,12 @@
             <small class="text-gray-500">اتركه فارغاً لتوليده تلقائياً من الاسم</small>
             @error('slug')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
           </div>
+          <div>
+            <label class="block text-gray-700 mb-2" for="code" style="font-size: 1.3rem;">كود القسم *</label>
+            <input type="text" id="code" name="code" value="{{ old('code') }}" placeholder="CAT-001" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem; font-family: Arial, sans-serif;" required>
+            <small class="text-gray-500">معرف قصير للقسم</small>
+            @error('code')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
           <div class="md:col-span-2">
             <label class="block text-gray-700 mb-2" for="description" style="font-size: 1.3rem;">الوصف</label>
             <textarea id="description" name="description" rows="4" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">{{ old('description') }}</textarea>

@@ -32,7 +32,8 @@ class EnrollmentController extends Controller
     public function create()
     {
         $students = User::role('student')->get();
-        $courses = Course::with('instructor')->where('status', 'approved')->get();
+        // Show all courses (not only approved)
+        $courses = Course::with('instructor')->get();
 
         return view('enrollments.create', compact('students', 'courses'));
     }
@@ -99,7 +100,7 @@ class EnrollmentController extends Controller
             ->select(
                 'course_materials.*',
                 'material_completions.completed_at',
-                'material_completions.progress'
+                DB::raw('NULL as progress')
             )
             ->orderBy('course_materials.order')
             ->get();

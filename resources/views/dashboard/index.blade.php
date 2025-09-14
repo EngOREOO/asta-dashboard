@@ -162,6 +162,20 @@
                 <h3 class="font-bold text-gray-900" style="font-size: 1.1rem;">نظرة عامة على النظام</h3>
             </div>
             <div class="space-y-4">
+                <a href="{{ route('active-users.index') }}" class="block">
+                    <div class="flex items-center justify-between p-4 bg-green-50 rounded-2xl hover:bg-green-100 transition-colors cursor-pointer">
+                        <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                            <div class="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="ti ti-users text-green-600 text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-700" style="font-size: 1.19rem;">المستخدمون النشطون</span>
+                        </div>
+                        <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                            <span class="text-lg font-bold text-green-600">{{ number_format($activeUsersCount) }}</span>
+                            <i class="ti ti-arrow-left text-green-500 text-sm"></i>
+                        </div>
+                    </div>
+                </a>
                 <div class="flex items-center justify-between p-4 bg-cyan-50 rounded-2xl">
                     <div class="flex items-center space-x-3 rtl:space-x-reverse">
                         <div class="w-8 h-8 bg-cyan-100 rounded-xl flex items-center justify-center">

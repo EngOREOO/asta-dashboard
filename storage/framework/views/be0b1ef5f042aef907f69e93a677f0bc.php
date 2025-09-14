@@ -188,6 +188,36 @@ unset($__errorArgs, $__bag); ?>
             </div>
             
             <div>
+              <label for="code" class="block text-sm font-medium text-gray-700 mb-2">كود الدورة *</label>
+              <input type="text" 
+                     id="code" 
+                     name="code" 
+                     value="<?php echo e(old('code')); ?>"
+                     placeholder="CRS-001"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                     style="font-family: Arial, sans-serif;"
+                     required>
+              <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+              <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+              <small class="text-gray-500">معرف قصير للدورة</small>
+            </div>
+            
+            <div>
               <label for="description" class="block text-sm font-medium text-gray-700 mb-2">الوصف</label>
               <textarea id="description" 
                         name="description" 
@@ -248,34 +278,6 @@ endif;
 unset($__errorArgs, $__bag); ?>
               </div>
               
-              <div>
-                <label for="degree_id" class="block text-sm font-medium text-gray-700 mb-2">مسار التعلم</label>
-                <select id="degree_id" 
-                        name="degree_id" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['degree_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>">
-                  <option value="">اختر المسار</option>
-                  <?php $__currentLoopData = ($careerLevels ?? collect()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cl): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($cl->id); ?>" <?php if(old('degree_id') == $cl->id): echo 'selected'; endif; ?>><?php echo e($cl->name); ?></option>
-                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </select>
-                <?php $__errorArgs = ['degree_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
-                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-              </div>
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -323,31 +325,6 @@ unset($__errorArgs, $__bag); ?>
             </div>
           </div>
 
-          <!-- Optional: Learning Paths (Step 1) - from degrees as multi-select checkboxes -->
-          <div class="space-y-6" x-show="step===1">
-            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
-              <i class="ti ti-route mr-2 text-green-500"></i>
-              مسارات التعلم
-            </h3>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">مسارات التعلم (من جدول المسارات المهنية)</label>
-              <?php ($degreesList = \App\Models\Degree::orderBy('name')->get(['id','name'])); ?>
-              <?php if($degreesList->isEmpty()): ?>
-                <div class="text-gray-500" style="font-size: 1.3rem;">لا توجد مسارات مهنية متاحة حالياً.</div>
-              <?php else: ?>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <?php $__currentLoopData = $degreesList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                  <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 bg-white/80 hover:bg-gray-50">
-                    <input type="checkbox" name="degree_ids[]" value="<?php echo e($d->id); ?>" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" <?php echo e(collect(old('degree_ids', []))->contains($d->id) ? 'checked' : ''); ?>>
-                    <span><?php echo e($d->name); ?></span>
-                  </label>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-              </div>
-              <p class="text-gray-500 mt-2" style="font-size: 1.1rem;">يمكنك اختيار أكثر من مسار عبر تحديد عدة خانات.</p>
-              <?php endif; ?>
-            </div>
-          </div>
 
           <!-- Image Upload (Step 1) -->
           <div class="space-y-6" x-show="step===1">

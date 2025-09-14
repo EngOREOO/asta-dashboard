@@ -34,6 +34,19 @@ return [
 
     'lifetime' => (int) env('SESSION_LIFETIME', 120),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Session Timeout (Inactivity)
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the number of minutes of inactivity before the
+    | session is automatically expired. This is different from lifetime
+    | as it resets on user activity.
+    |
+    */
+
+    'timeout' => (int) env('SESSION_TIMEOUT', 30),
+
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 
     /*

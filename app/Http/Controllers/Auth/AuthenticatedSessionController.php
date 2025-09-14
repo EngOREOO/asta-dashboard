@@ -16,8 +16,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): Response
+    public function create()
     {
+        // If already authenticated, send directly to dashboard
+        if (request()->user()) {
+            if (request()->header('X-Inertia')) {
+                return Inertia::location('/dashboard');
+            }
+
+            return redirect()->intended('/dashboard');
+        }
+
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
@@ -27,11 +36,16 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        // For Inertia requests, force a full location change to ensure URL updates immediately
+        if ($request->header('X-Inertia')) {
+            return Inertia::location('/dashboard');
+        }
 
         // Redirect all users to the main dashboard with explicit URL
         return redirect()->intended('/dashboard');

@@ -1,11 +1,11 @@
 @extends('layouts.dash')
 
-@section('title', 'تحليلات الاختبارات السريعة')
+@section('title', 'تحليلات اختبارات القبول')
 
 @section('content')
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">تحليلات الاختبارات السريعة</h1>
-        <p class="text-gray-600 mt-2">نظرة شاملة على أداء جميع الاختبارات السريعة</p>
+        <h1 class="text-3xl font-bold text-gray-900">تحليلات اختبارات القبول</h1>
+        <p class="text-gray-600 mt-2">نظرة شاملة على أداء جميع اختبارات القبول</p>
     </div>
 
     <!-- Statistics Cards -->

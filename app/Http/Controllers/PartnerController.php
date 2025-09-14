@@ -24,12 +24,14 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         try {
+            \Log::info('Partner store request data:', $request->all());
+            
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'website' => 'nullable|url|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'boolean',
+                'is_active' => 'nullable',
                 'sort_order' => 'nullable|integer|min:0',
             ], [
                 'name.required' => 'اسم الشريك مطلوب',
@@ -43,6 +45,8 @@ class PartnerController extends Controller
                 'sort_order.min' => 'ترتيب العرض يجب أن يكون أكبر من أو يساوي 0',
             ]);
 
+            \Log::info('Validated data:', $validated);
+
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = 'partner_'.time().'_'.Str::random(10).'.'.$image->getClientOriginalExtension();
@@ -55,22 +59,28 @@ class PartnerController extends Controller
 
                 $image->move(public_path($imagePath), $imageName);
                 $validated['image'] = $imagePath.$imageName;
+                \Log::info('Image uploaded:', ['path' => $validated['image']]);
             }
 
-            $validated['is_active'] = $request->boolean('is_active');
+            $validated['is_active'] = $request->input('is_active') == '1';
             $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
+            \Log::info('Final data to create:', $validated);
+
             $partner = Partner::create($validated);
+            \Log::info('Partner created successfully:', ['id' => $partner->id, 'name' => $partner->name]);
 
             return redirect()->route('partners.show', $partner)
                 ->with('success', 'تم إضافة الشريك بنجاح!');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation error:', $e->errors());
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput()
                 ->with('error', 'يرجى تصحيح الأخطاء أدناه');
         } catch (\Exception $e) {
+            \Log::error('Partner creation error:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'حدث خطأ أثناء إضافة الشريك: '.$e->getMessage());
@@ -95,7 +105,7 @@ class PartnerController extends Controller
                 'description' => 'nullable|string',
                 'website' => 'nullable|url|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_active' => 'boolean',
+                'is_active' => 'nullable',
                 'sort_order' => 'nullable|integer|min:0',
             ], [
                 'name.required' => 'اسم الشريك مطلوب',
@@ -128,7 +138,7 @@ class PartnerController extends Controller
                 $validated['image'] = $imagePath.$imageName;
             }
 
-            $validated['is_active'] = $request->boolean('is_active');
+            $validated['is_active'] = $request->input('is_active') == '1';
 
             $partner->update($validated);
 

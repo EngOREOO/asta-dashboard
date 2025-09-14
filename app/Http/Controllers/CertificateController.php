@@ -20,7 +20,7 @@ class CertificateController extends Controller
 
     public function create()
     {
-        $courses = Course::where('status', 'approved')->get();
+        $courses = Course::all();
         $users = User::all();
         
         return view('certificates.create', compact('courses', 'users'));
@@ -31,11 +31,19 @@ class CertificateController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'course_id' => 'required|exists:courses,id',
+            'code' => 'nullable|string|max:255',
             'issued_at' => 'nullable|date',
             'certificate_url' => 'nullable|url',
         ]);
 
         $validated['issued_at'] = $validated['issued_at'] ?? now();
+
+        // Generate code if not provided from frontend
+        if (empty($validated['code'])) {
+            $course = Course::findOrFail($validated['course_id']);
+            $prefix = $course->code ?: (str($course->title)->slug('-') ?: 'asta');
+            $validated['code'] = strtolower($prefix).'-'.str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        }
 
         $certificate = Certificate::create($validated);
 

@@ -59,27 +59,36 @@
             <select id="course_id" name="course_id" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 @error('course_id') border-red-300 @enderror" required>
               <option value="">اختر الدورة...</option>
               @foreach($courses as $course)
-                <option value="{{ $course->id }}" {{ old('course_id') == $course->id ? 'selected' : '' }}>{{ $course->title }}</option>
+                <option value="{{ $course->id }}" data-code-prefix="{{ $course->code ?: Str::slug($course->title, '-') }}" {{ old('course_id') == $course->id ? 'selected' : '' }}>{{ $course->title }}</option>
               @endforeach
             </select>
             @error('course_id')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
           </div>
 
+          <!-- Certificate Code (auto-generated) -->
+          <div id="code-wrapper" class="hidden">
+            <label for="code" class="block text-gray-700 mb-2" style="font-family: Arial, sans-serif;">رمز الشهادة</label>
+            <input type="text" id="code" name="code" value="{{ old('code') }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-family: Arial, sans-serif;" readonly>
+            <p class="text-gray-500 mt-1">يتم توليده تلقائياً حسب الدورة.</p>
+          </div>
+
           <!-- Issued at -->
           <div>
-            <label for="issued_at" class="block text-gray-700 mb-2">تاريخ الإصدار</label>
-            <input type="datetime-local" id="issued_at" name="issued_at" value="{{ old('issued_at', now()->format('Y-m-d\\TH:i')) }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 @error('issued_at') border-red-300 @enderror">
+            <label for="issued_at" class="block text-gray-700 mb-2" style="font-family: Arial, sans-serif;">تاريخ الإصدار</label>
+            <input type="datetime-local" id="issued_at" name="issued_at" value="{{ old('issued_at', now()->format('Y-m-d\\TH:i')) }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 @error('issued_at') border-red-300 @enderror" style="font-family: Arial, sans-serif;">
             @error('issued_at')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
             <p class="text-gray-500 mt-1">اتركها فارغة لاستخدام التاريخ والوقت الحاليين</p>
           </div>
 
-          <!-- URL -->
+          {{-- رابط الشهادة (مخفي مؤقتاً) --}}
+          {{--
           <div>
             <label for="certificate_url" class="block text-gray-700 mb-2">رابط الشهادة</label>
             <input type="url" id="certificate_url" name="certificate_url" value="{{ old('certificate_url') }}" placeholder="https://example.com/certificate.pdf" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 @error('certificate_url') border-red-300 @enderror">
             @error('certificate_url')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
             <p class="text-gray-500 mt-1">اختياري: رابط لتحميل الشهادة</p>
           </div>
+          --}}
 
           <!-- Actions -->
           <div class="md:col-span-2 flex items-center justify-end gap-3 pt-2">
@@ -90,6 +99,33 @@
             </button>
           </div>
         </form>
+        <script>
+          (function() {
+            const courseSelect = document.getElementById('course_id');
+            const codeWrapper = document.getElementById('code-wrapper');
+            const codeInput = document.getElementById('code');
+
+            function generateCode(prefix) {
+              const n = Math.floor(Math.random() * 1000000);
+              const six = String(n).padStart(6, '0');
+              return (prefix || 'asta').toLowerCase() + '-' + six;
+            }
+
+            function updateCode() {
+              const opt = courseSelect.options[courseSelect.selectedIndex];
+              const prefix = opt ? (opt.getAttribute('data-code-prefix') || 'asta') : 'asta';
+              codeInput.value = generateCode(prefix);
+              codeWrapper.classList.remove('hidden');
+            }
+
+            if (courseSelect) {
+              courseSelect.addEventListener('change', updateCode);
+              if (courseSelect.value) {
+                updateCode();
+              }
+            }
+          })();
+        </script>
       </div>
     </div>
   </div>

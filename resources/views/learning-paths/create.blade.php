@@ -48,7 +48,7 @@
             @error('description')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
           </div>
           <div>
-            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">مفعل</label>
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">نشط</label>
             <label class="inline-flex items-center gap-2">
               <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="is_active" name="is_active" value="1" checked>
               <span style="font-size: 1.3rem;">نشط</span>

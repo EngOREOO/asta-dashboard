@@ -1,561 +1,287 @@
-<?php
-    $title = 'تعديل المسار المهنية';
-?>
+<?php ($title = 'تعديل مسار مهني'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100">
+<div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 font-arabic">
   <div class="space-y-8 p-6">
-    
-    <!-- Success/Error Notifications -->
-    <?php if(session('success')): ?>
-    <div class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6 animate-slide-down">
-      <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <i class="ti ti-check-circle text-green-400 text-xl"></i>
-        </div>
-        <div class="mr-3">
-          <p class="text-sm font-medium text-green-800"><?php echo e(session('success')); ?></p>
-        </div>
-        <div class="mr-auto pl-3">
-          <div class="-mx-1.5 -my-1.5">
-            <button type="button" class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()">
-              <i class="ti ti-x text-sm"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <?php endif; ?>
-
-    <?php if(session('error')): ?>
-    <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 animate-slide-down">
-      <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <i class="ti ti-alert-circle text-red-400 text-xl"></i>
-        </div>
-        <div class="mr-3">
-          <p class="text-sm font-medium text-red-800"><?php echo e(session('error')); ?></p>
-        </div>
-        <div class="mr-auto pl-3">
-          <div class="-mx-1.5 -my-1.5">
-            <button type="button" class="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()">
-              <i class="ti ti-x text-sm"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Debug: Show all validation errors -->
-    <?php if($errors->any()): ?>
-    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6">
-      <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <i class="ti ti-alert-triangle text-yellow-400 text-xl"></i>
-        </div>
-        <div class="mr-3">
-          <h3 class="text-sm font-medium text-yellow-800">أخطاء التحقق:</h3>
-          <ul class="mt-2 text-sm text-yellow-700 list-disc list-inside">
-            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-              <li><?php echo e($error); ?></li>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between animate-fade-in">
       <div class="space-y-2">
-        <h1 class="text-4xl font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent">
-          تعديل المسار المهنية
-        </h1>
-        <p class="text-lg text-gray-600 flex items-center">
-          <i class="ti ti-graduation-cap mr-2 text-cyan-500"></i>
-          تحديث معلومات المسار المهنية: <span class="font-semibold text-gray-800"><?php echo e($degree->name); ?></span>
-        </p>
+        <h1 class="font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent" style="font-size: 1.9rem;">تعديل مسار مهني</h1>
+        <p class="text-gray-600" style="font-size: 1.3rem;">تحديث معلومات المسار: <?php echo e($degree->name); ?></p>
       </div>
       <div class="mt-4 sm:mt-0">
-        <a href="<?php echo e(route('degrees.index')); ?>" 
-           class="group inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl font-semibold text-sm text-gray-700 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300">
-          <i class="ti ti-arrow-right mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>
-          العودة للمسارات المهنية
+        <a href="<?php echo e(route('degrees.index')); ?>" class="inline-flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50 shadow-sm" style="font-size: 1.3rem;">
+          <i class="ti ti-arrow-right mr-2"></i>
+          العودة للمسارات
         </a>
       </div>
     </div>
 
-    <!-- Edit Form -->
     <div class="bg-white/70 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/20 animate-slide-up">
       <div class="bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-600 px-8 py-6 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20"></div>
         <div class="relative z-10">
-          <h2 class="text-2xl font-bold text-white flex items-center">
+          <h2 class="font-bold text-white flex items-center" style="font-size: 1.9rem;">
             <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mr-4 backdrop-blur-sm">
-              <i class="ti ti-graduation-cap text-white text-xl"></i>
+              <i class="ti ti-certificate text-white text-xl"></i>
             </div>
-            تعديل بيانات المسار المهنية
+            نموذج تعديل مسار
           </h2>
-          <p class="text-blue-100 mt-2">قم بتحديث معلومات المسار المهنية بسهولة وأمان</p>
         </div>
-        <!-- Decorative elements -->
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
       </div>
-    
-    <form method="POST" action="<?php echo e(route('degrees.update', $degree)); ?>" class="p-8">
-      <?php echo csrf_field(); ?>
-      <?php echo method_field('PUT'); ?>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <!-- Main Form Fields -->
-        <div class="lg:col-span-2 space-y-8">
-          <!-- Degree Name -->
-          <div class="group space-y-3">
-            <label for="name" class="block text-sm font-semibold text-gray-800 flex items-center">
-              <div class="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-2"></div>
-              اسم المسار المهنية <span class="text-red-500 ml-1">*</span>
-            </label>
-            <div class="relative group">
-              <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-blue-500">
-                <i class="ti ti-graduation-cap text-gray-400 group-focus-within:text-blue-500"></i>
-              </div>
-              <input type="text" 
-                     id="name" 
-                     name="name" 
-                     value="<?php echo e(old('name', $degree->name)); ?>"
-                     class="block w-full pr-12 pl-4 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 hover:border-gray-300 hover:bg-white/70 <?php $__errorArgs = ['name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-500/20 focus:border-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                     placeholder="أدخل اسم المسار المهنية"
-                     required>
-            </div>
+
+      <div class="p-8">
+        <form action="<?php echo e(route('degrees.update', $degree)); ?>" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <?php echo csrf_field(); ?>
+          <?php echo method_field('PUT'); ?>
+
+          <div class="md:col-span-2">
+            <label for="name" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">اسم المسار *</label>
+            <input id="name" name="name" type="text" value="<?php echo e(old('name', $degree->name)); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" required>
             <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <div class="flex items-center space-x-2 space-x-reverse text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-200 animate-shake shadow-sm">
-              <i class="ti ti-alert-circle text-lg"></i>
-              <span class="text-sm font-semibold"><?php echo e($message); ?></span>
-            </div>
-            <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
           </div>
 
-          <!-- Level, Duration and Credit Hours -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Level -->
-            <div class="group space-y-3">
-              <label for="level" class="block text-sm font-semibold text-gray-800 flex items-center">
-                <div class="w-2 h-2 bg-gradient-to-r from-green-500 to-blue-500 rounded-full mr-2"></div>
-                المستوى <span class="text-red-500 ml-1">*</span>
-              </label>
-              <div class="relative group">
-                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-green-500">
-                  <i class="ti ti-layers text-gray-400 group-focus-within:text-green-500"></i>
-                </div>
-                <select id="level" 
-                        name="level" 
-                        class="block w-full pr-12 pl-4 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 hover:bg-white/70 <?php $__errorArgs = ['level'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-500/20 focus:border-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                        required>
-                  <option value="">اختر المستوى</option>
-                  <option value="certificate" <?php echo e(old('level', $currentLevelString) == 'certificate' ? 'selected' : ''); ?>>شهادة</option>
-                  <option value="diploma" <?php echo e(old('level', $currentLevelString) == 'diploma' ? 'selected' : ''); ?>>دبلوم</option>
-                  <option value="bachelor" <?php echo e(old('level', $currentLevelString) == 'bachelor' ? 'selected' : ''); ?>>بكالوريوس</option>
-                  <option value="master" <?php echo e(old('level', $currentLevelString) == 'master' ? 'selected' : ''); ?>>ماجستير</option>
-                  <option value="doctorate" <?php echo e(old('level', $currentLevelString) == 'doctorate' ? 'selected' : ''); ?>>دكتوراه</option>
-                </select>
-              </div>
-              <?php $__errorArgs = ['level'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-              <div class="flex items-center space-x-2 space-x-reverse text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-200 animate-shake shadow-sm">
-                <i class="ti ti-alert-circle text-lg"></i>
-                <span class="text-sm font-semibold"><?php echo e($message); ?></span>
-              </div>
-              <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-            </div>
-
-            <!-- Duration -->
-            <div class="group space-y-3">
-              <label for="duration_months" class="block text-sm font-semibold text-gray-800 flex items-center">
-                <div class="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-2"></div>
-                المدة (بالأشهر)
-              </label>
-              <div class="relative group">
-                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-purple-500">
-                  <i class="ti ti-clock text-gray-400 group-focus-within:text-purple-500"></i>
-                </div>
-                <input type="number" 
-                       id="duration_months" 
-                       name="duration_months" 
-                       value="<?php echo e(old('duration_months', $degree->duration_months)); ?>"
-                       min="1"
-                       class="block w-full pr-12 pl-4 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 hover:border-gray-300 hover:bg-white/70 <?php $__errorArgs = ['duration_months'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-500/20 focus:border-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                       placeholder="عدد الأشهر">
-              </div>
-              <?php $__errorArgs = ['duration_months'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-              <div class="flex items-center space-x-2 space-x-reverse text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-200 animate-shake shadow-sm">
-                <i class="ti ti-alert-circle text-lg"></i>
-                <span class="text-sm font-semibold"><?php echo e($message); ?></span>
-              </div>
-              <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-              <p class="text-xs text-gray-500">الوقت المتوقع للإنجاز بالأشهر</p>
-            </div>
-
-            <!-- Credit Hours -->
-            <div class="group space-y-3">
-              <label for="credit_hours" class="block text-sm font-semibold text-gray-800 flex items-center">
-                <div class="w-2 h-2 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full mr-2"></div>
-                الساعات المعتمدة
-              </label>
-              <div class="relative group">
-                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-amber-500">
-                  <i class="ti ti-hourglass-high text-gray-400 group-focus-within:text-amber-500"></i>
-                </div>
-                <input type="number"
-                       id="credit_hours"
-                       name="credit_hours"
-                       value="<?php echo e(old('credit_hours', $degree->credit_hours)); ?>"
-                       min="0"
-                       class="block w-full pr-12 pl-4 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 transition-all duration-300 hover:border-gray-300 hover:bg-white/70 <?php $__errorArgs = ['credit_hours'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-500/20 focus:border-red-500 <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                       placeholder="عدد الساعات">
-              </div>
-              <?php $__errorArgs = ['credit_hours'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-              <div class="flex items-center space-x-2 space-x-reverse text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-200 animate-shake shadow-sm">
-                <i class="ti ti-alert-circle text-lg"></i>
-                <span class="text-sm font-semibold"><?php echo e($message); ?></span>
-              </div>
-              <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-              <p class="text-xs text-gray-500">إجمالي الساعات المعتمدة (اختياري)</p>
-            </div>
+          <div>
+            <label for="code" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">كود المسار</label>
+            <input id="code" name="code" type="text" value="<?php echo e(old('code', $degree->code)); ?>" placeholder="EX-123" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem; font-family: Arial, sans-serif;">
+            <small class="text-gray-500">اختياري: معرف قصير للمسار</small>
           </div>
 
-          <!-- Description -->
-          <div class="group space-y-3">
-            <label for="description" class="block text-sm font-semibold text-gray-800 flex items-center">
-              <div class="w-2 h-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mr-2"></div>
-              الوصف
-            </label>
-            <div class="relative group">
-              <div class="absolute top-4 right-4 pointer-events-none transition-colors duration-300 group-focus-within:text-orange-500">
-                <i class="ti ti-file-text text-gray-400 group-focus-within:text-orange-500"></i>
-              </div>
-              <textarea id="description" 
-                        name="description" 
-                        rows="4"
-                        class="block w-full pr-12 pl-4 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 hover:border-gray-300 hover:bg-white/70 resize-none <?php $__errorArgs = ['description'];
+          <div>
+            <label for="level" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المستوى *</label>
+            <select id="level" name="level" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" required>
+              <option value="">اختر المستوى</option>
+              <?php $__currentLoopData = ($careerLevels ?? collect()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cl): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($cl->id); ?>" <?php echo e(old('level', $degree->level) == $cl->id ? 'selected' : ''); ?>><?php echo e($cl->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+            <?php $__errorArgs = ['level'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-500/20 focus:border-red-500 <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>"
-                        placeholder="أدخل وصف المسار المهنية"><?php echo e(old('description', $degree->description)); ?></textarea>
-            </div>
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div>
+            <label for="duration_months" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المدة (أشهر)</label>
+            <input id="duration_months" name="duration_months" type="number" value="<?php echo e(old('duration_months', $degree->duration_months)); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="1">
+            <small class="text-gray-500">المدة المتوقعة لإكمال البرنامج</small>
+            <?php $__errorArgs = ['duration_months'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div>
+            <label for="credit_hours" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">عدد الساعات المعتمدة</label>
+            <input id="credit_hours" name="credit_hours" type="number" value="<?php echo e(old('credit_hours', $degree->credit_hours)); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="0">
+            <small class="text-gray-500">إجمالي الساعات المعتمدة للمسار (اختياري)</small>
+          </div>
+
+          <div class="md:col-span-2">
+            <label for="description" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الوصف</label>
+            <textarea id="description" name="description" rows="3" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;"><?php echo e(old('description', $degree->description)); ?></textarea>
             <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <div class="flex items-center space-x-2 space-x-reverse text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-200 animate-shake shadow-sm">
-              <i class="ti ti-alert-circle text-lg"></i>
-              <span class="text-sm font-semibold"><?php echo e($message); ?></span>
-            </div>
-            <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
           </div>
 
-          <!-- Active Status -->
-          <div class="group space-y-3">
-            <label class="block text-sm font-semibold text-gray-800 flex items-center">
-              <div class="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-2"></div>
-              حالة النشاط
+          <div class="md:col-span-3">
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الدورات التدريبية</label>
+            <div class="relative">
+              <div class="multiselect-dropdown border border-gray-300 rounded-xl bg-white">
+                <div class="dropdown-trigger flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 rounded-xl">
+                  <div class="selected-items flex flex-wrap gap-1">
+                    <span class="placeholder text-gray-500" style="font-size: 1.2rem;">اختر الدورات...</span>
+                  </div>
+                  <i class="ti ti-chevron-down text-gray-400"></i>
+                </div>
+                <div class="dropdown-content hidden absolute z-50 w-full bg-white border border-gray-300 rounded-xl shadow-lg mt-1 max-h-64 overflow-y-auto">
+                  <div class="p-2 border-b border-gray-200">
+                    <input type="text" class="search-input w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="البحث في الدورات..." style="font-size: 1.2rem;">
+                  </div>
+                  <div class="course-list">
+                    <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <label class="flex items-center p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+                        <input type="checkbox" name="courses[]" value="<?php echo e($course->id); ?>" 
+                               <?php echo e(in_array($course->id, old('courses', $selectedCourses)) ? 'checked' : ''); ?>
+
+                               class="course-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3">
+                        <span class="course-title" style="font-size: 1.2rem;"><?php echo e($course->title); ?></span>
+                      </label>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <small class="text-gray-500">انقر لفتح قائمة الدورات واختر ما تريد</small>
+            <?php $__errorArgs = ['courses'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+            <?php $__errorArgs = ['courses.*'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">نشط</label>
+            <label class="inline-flex items-center gap-2">
+              <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="is_active" name="is_active" value="1" <?php echo e(old('is_active', $degree->is_active) ? 'checked' : ''); ?>>
+              <span style="font-size: 1.3rem;">نشط</span>
             </label>
-            <div class="flex items-center space-x-4 space-x-reverse bg-white/50 backdrop-blur-sm rounded-2xl p-4 border-2 border-gray-200 hover:border-gray-300 transition-all duration-300">
-              <!-- Hidden input to ensure false value is sent when checkbox is unchecked -->
-              <input type="hidden" name="is_active" value="0">
-              <label class="relative inline-flex items-center cursor-pointer group">
-                <input type="checkbox" 
-                       id="is_active" 
-                       name="is_active" 
-                       value="1"
-                       class="sr-only peer"
-                       <?php echo e(old('is_active', $degree->is_active) ? 'checked' : ''); ?>>
-                <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-teal-500 shadow-lg"></div>
-              </label>
-              <div class="flex flex-col">
-                <span class="text-sm font-medium <?php echo e(old('is_active', $degree->is_active) ? 'text-green-700' : 'text-red-700'); ?>" id="status-text">
-                  <?php echo e(old('is_active', $degree->is_active) ? 'نشط' : 'غير نشط'); ?>
-
-                </span>
-                <span class="text-xs <?php echo e(old('is_active', $degree->is_active) ? 'text-green-600' : 'text-red-600'); ?>">
-                  <?php echo e(old('is_active', $degree->is_active) ? 'المسار مرئية للجمهور' : 'المسار مخفية'); ?>
-
-                </span>
-              </div>
-            </div>
           </div>
-        </div>
 
-        <!-- Degree Info Section -->
-        <div class="space-y-8">
-          <!-- Degree Stats -->
-          <div class="bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-xl">
-            <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
-              <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mr-3">
-                <i class="ti ti-chart-bar text-white text-lg"></i>
-              </div>
-              إحصائيات المسار
-            </h3>
-            
-            <div class="space-y-6">
-              <!-- Courses Count -->
-              <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm font-medium text-gray-600">عدد الدورات</p>
-                    <p class="text-2xl font-bold text-gray-900"><?php echo e($degree->courses_count ?? 0); ?></p>
-                  </div>
-                  <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <i class="ti ti-book text-blue-600 text-xl"></i>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Level -->
-              <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm font-medium text-gray-600">المستوى الحالي</p>
-                    <p class="text-lg font-semibold text-gray-900"><?php echo e(ucfirst($currentLevelString ?? 'certificate')); ?></p>
-                  </div>
-                  <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                    <i class="ti ti-layers text-green-600 text-xl"></i>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Duration -->
-              <?php if($degree->duration_months): ?>
-              <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm font-medium text-gray-600">المدة</p>
-                    <p class="text-lg font-semibold text-gray-900"><?php echo e($degree->duration_months); ?> شهر</p>
-                  </div>
-                  <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <i class="ti ti-clock text-purple-600 text-xl"></i>
-                  </div>
-                </div>
-              </div>
-              <?php endif; ?>
-
-              <!-- Created Date -->
-              <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm font-medium text-gray-600">تاريخ الإنشاء</p>
-                    <p class="text-lg font-semibold text-gray-900"><?php echo e($degree->created_at->format('M Y')); ?></p>
-                  </div>
-                  <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                    <i class="ti ti-calendar text-orange-600 text-xl"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="md:col-span-2 flex items-center gap-3 pt-2">
+            <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl shadow hover:shadow-lg hover:from-indigo-700 hover:to-blue-700 transition" style="font-size: 1.3rem;">حفظ التغييرات</button>
+            <a href="<?php echo e(route('degrees.index')); ?>" class="inline-flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50 shadow-sm" style="font-size: 1.3rem;">إلغاء</a>
           </div>
-        </div>
+        </form>
       </div>
-
-      <!-- Form Actions -->
-      <div class="mt-12 flex flex-col sm:flex-row gap-6 justify-end">
-        <a href="<?php echo e(route('degrees.show', $degree)); ?>" 
-           class="group inline-flex items-center justify-center px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl font-semibold text-sm text-gray-700 uppercase tracking-widest hover:bg-white hover:border-gray-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-300 shadow-lg hover:shadow-xl">
-          <i class="ti ti-x mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
-          إلغاء
-        </a>
-        <button type="submit" 
-                class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 border border-transparent rounded-2xl font-semibold text-sm text-white uppercase tracking-widest hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 disabled:opacity-25 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105">
-          <i class="ti ti-device-floppy mr-2 group-hover:rotate-12 transition-transform duration-300"></i>
-          حفظ التغييرات
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
 
 <style>
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.multiselect-dropdown {
+  position: relative;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+.dropdown-content {
+  display: none;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+.dropdown-content.show {
+  display: block;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+.selected-item {
+  background: #3b82f6;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  margin: 2px;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
+.selected-item .remove {
+  margin-right: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.animate-slide-up {
-  animation: slideUp 0.8s ease-out;
-}
-
-.animate-slide-down {
-  animation: slideDown 0.5s ease-out;
-}
-
-.animate-shake {
-  animation: shake 0.5s ease-in-out;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #2563eb, #7c3aed);
+.selected-item .remove:hover {
+  color: #fbbf24;
 }
 </style>
 
 <script>
-// Update status text when toggle changes
-document.getElementById('is_active').addEventListener('change', function() {
-  const statusText = document.getElementById('status-text');
-  const statusDescription = statusText.nextElementSibling;
-  
-  if (this.checked) {
-    statusText.textContent = 'نشط';
-    statusText.className = 'text-sm font-medium text-green-700';
-    statusDescription.textContent = 'المسار مرئية للجمهور';
-    statusDescription.className = 'text-xs text-green-600';
-  } else {
-    statusText.textContent = 'غير نشط';
-    statusText.className = 'text-sm font-medium text-red-700';
-    statusDescription.textContent = 'المسار مخفية';
-    statusDescription.className = 'text-xs text-red-600';
-  }
-});
-
-// Initialize status text colors on page load
 document.addEventListener('DOMContentLoaded', function() {
-  const checkbox = document.getElementById('is_active');
-  const statusText = document.getElementById('status-text');
-  const statusDescription = statusText.nextElementSibling;
+  const dropdown = document.querySelector('.multiselect-dropdown');
+  const trigger = dropdown.querySelector('.dropdown-trigger');
+  const content = dropdown.querySelector('.dropdown-content');
+  const searchInput = dropdown.querySelector('.search-input');
+  const courseList = dropdown.querySelector('.course-list');
+  const selectedItemsContainer = dropdown.querySelector('.selected-items');
+  const placeholder = dropdown.querySelector('.placeholder');
   
-  if (checkbox.checked) {
-    statusText.className = 'text-sm font-medium text-green-700';
-    statusDescription.className = 'text-xs text-green-600';
-  } else {
-    statusText.className = 'text-sm font-medium text-red-700';
-    statusDescription.className = 'text-xs text-red-600';
-  }
-});
-
-// Add smooth focus transitions
-document.querySelectorAll('input, textarea, select').forEach(input => {
-  input.addEventListener('focus', function() {
-    this.parentElement.classList.add('ring-4', 'ring-blue-500/20');
+  const courses = Array.from(dropdown.querySelectorAll('.course-checkbox')).map(checkbox => ({
+    id: checkbox.value,
+    title: checkbox.nextElementSibling.textContent.trim(),
+    checkbox: checkbox
+  }));
+  
+  // Toggle dropdown
+  trigger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    content.classList.toggle('show');
+    if (content.classList.contains('show')) {
+      searchInput.focus();
+    }
   });
   
-  input.addEventListener('blur', function() {
-    this.parentElement.classList.remove('ring-4', 'ring-blue-500/20');
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target)) {
+      content.classList.remove('show');
+    }
   });
-});
-
-// Add loading state to submit button
-document.querySelector('form').addEventListener('submit', function() {
-  const submitBtn = document.querySelector('button[type="submit"]');
-  submitBtn.innerHTML = '<i class="ti ti-loader-2 mr-2 animate-spin"></i>جاري الحفظ...';
-  submitBtn.disabled = true;
-});
-
-// Auto-hide debug errors after 10 seconds
-setTimeout(function() {
-  const debugErrors = document.querySelector('.bg-yellow-50');
-  if (debugErrors) {
-    debugErrors.style.transition = 'opacity 0.5s ease-out';
-    debugErrors.style.opacity = '0';
-    setTimeout(() => debugErrors.remove(), 500);
+  
+  // Search functionality
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    courses.forEach(course => {
+      const isVisible = course.title.toLowerCase().includes(searchTerm);
+      course.checkbox.closest('label').style.display = isVisible ? 'flex' : 'none';
+    });
+  });
+  
+  // Handle checkbox changes
+  courses.forEach(course => {
+    course.checkbox.addEventListener('change', function() {
+      updateSelectedItems();
+    });
+  });
+  
+  // Update selected items display
+  function updateSelectedItems() {
+    const selectedCourses = courses.filter(course => course.checkbox.checked);
+    
+    if (selectedCourses.length === 0) {
+      placeholder.style.display = 'block';
+      selectedItemsContainer.innerHTML = '<span class="placeholder text-gray-500" style="font-size: 1.2rem;">اختر الدورات...</span>';
+    } else {
+      placeholder.style.display = 'none';
+      selectedItemsContainer.innerHTML = selectedCourses.map(course => 
+        `<span class="selected-item">
+          <span class="remove" onclick="removeCourse(${course.id})">&times;</span>
+          ${course.title}
+        </span>`
+      ).join('');
+    }
   }
-}, 10000);
+  
+  // Remove course function
+  window.removeCourse = function(courseId) {
+    const course = courses.find(c => c.id == courseId);
+    if (course) {
+      course.checkbox.checked = false;
+      updateSelectedItems();
+    }
+  };
+  
+  // Initialize display
+  updateSelectedItems();
+});
 </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.dash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\ahmed\Documents\asta\asss\resources\views/degrees/edit.blade.php ENDPATH**/ ?>
