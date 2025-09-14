@@ -12,6 +12,7 @@ class CertificateController extends Controller
     public function index()
     {
         $certificates = Certificate::with(['user', 'course.instructor', 'course.category'])
+            ->whereHas('course') // Only show certificates for existing courses
             ->latest()
             ->paginate(20);
             
@@ -54,6 +55,13 @@ class CertificateController extends Controller
     public function show(Certificate $certificate)
     {
         $certificate->load(['user', 'course.instructor', 'course.category']);
+        
+        // Check if course exists, if not, show a message
+        if (!$certificate->course) {
+            return view('certificates.show', compact('certificate'))
+                ->with('warning', 'The course associated with this certificate has been deleted.');
+        }
+        
         return view('certificates.show', compact('certificate'));
     }
 

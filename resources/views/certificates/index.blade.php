@@ -75,7 +75,7 @@
                 {{ $certificate->code ?? '—' }}
               </span>
             </td>
-            <td>{{ optional($certificate->course->instructor)->name ?? '—' }}</td>
+            <td>{{ optional($certificate->course)->instructor?->name ?? '—' }}</td>
             <td>{{ $certificate->issued_at ? \Carbon\Carbon::parse($certificate->issued_at)->format('Y-n-j') : '—' }}</td>
             <td><span class="inline-flex px-2.5 py-0.5 rounded-full font-medium bg-green-100 text-green-800" style="font-size: 1.2rem;">صادرة</span></td>
             <td class="text-center">

@@ -58,8 +58,8 @@
               <text x="842" y="490" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">{{ optional($certificate->course)->title ?? '—' }}</text>
               
               <!-- Course Details -->
-              <text x="842" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#7F8C8D">المحاضر: {{ optional($certificate->course->instructor)->name ?? '—' }}</text>
-              <text x="842" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#7F8C8D">القسم: {{ optional($certificate->course->category)->name ?? '—' }}</text>
+              <text x="842" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#7F8C8D">المحاضر: {{ optional($certificate->course)->instructor?->name ?? '—' }}</text>
+              <text x="842" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#7F8C8D">القسم: {{ optional($certificate->course)->category?->name ?? '—' }}</text>
               
               <!-- Issue Date -->
               <text x="842" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">تاريخ الإصدار: {{ $certificate->issued_at ? \Carbon\Carbon::parse($certificate->issued_at)->format('Y-m-d') : '—' }}</text>
@@ -128,11 +128,11 @@
               <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
                   <div class="text-gray-600 mb-1">Instructor</div>
-                  <div class="font-medium">{{ optional($certificate->course->instructor)->name ?? '—' }}</div>
+                  <div class="font-medium">{{ optional($certificate->course)->instructor?->name ?? '—' }}</div>
                 </div>
                 <div>
                   <div class="text-gray-600 mb-1">Category</div>
-                  <div class="font-medium">{{ optional($certificate->course->category)->name ?? '—' }}</div>
+                  <div class="font-medium">{{ optional($certificate->course)->category?->name ?? '—' }}</div>
                 </div>
                 <div>
                   <div class="text-gray-600 mb-1">Issued on</div>
