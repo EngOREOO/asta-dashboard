@@ -19,9 +19,95 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::with([
+            'courses' => function ($query) {
+                $query->with(['instructor:id,name,profile_photo_path', 'degree:id,name'])
+                    ->withCount(['students', 'reviews'])
+                    ->withAvg('reviews', 'rating')
+                    ->whereIn('status', ['draft', 'pending', 'approved']);
+            }
+        ])->get();
 
-        return response()->json($categories);
+        // Enhance each category with related data
+        $categories = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'code' => $category->code,
+                'description' => $category->description,
+                'image_url' => $category->image_url,
+                'created_at' => $category->created_at,
+                'updated_at' => $category->updated_at,
+                
+                // Related data
+                'courses' => $category->courses->map(function ($course) {
+                    return [
+                        'id' => $course->id,
+                        'title' => $course->title,
+                        'slug' => $course->slug,
+                        'description' => $course->description,
+                        'price' => $course->price,
+                        'is_free' => $course->is_free,
+                        'status' => $course->status,
+                        'level' => $course->level,
+                        'duration' => $course->duration,
+                        'thumbnail_url' => $course->thumbnail_url,
+                        'instructor' => $course->instructor ? [
+                            'id' => $course->instructor->id,
+                            'name' => $course->instructor->name,
+                            'profile_photo_path' => $course->instructor->profile_photo_path,
+                        ] : null,
+                        'degree' => $course->degree ? [
+                            'id' => $course->degree->id,
+                            'name' => $course->degree->name,
+                        ] : null,
+                        'students_count' => $course->students_count,
+                        'reviews_count' => $course->reviews_count,
+                        'reviews_avg_rating' => round($course->reviews_avg_rating ?? 0, 1),
+                        'created_at' => $course->created_at,
+                        'updated_at' => $course->updated_at,
+                    ];
+                }),
+                
+                // Statistics
+                'stats' => [
+                    'total_courses' => $category->courses->count(),
+                    'total_students' => $category->courses->sum('students_count'),
+                    'total_reviews' => $category->courses->sum('reviews_count'),
+                    'average_rating' => $category->courses->avg('reviews_avg_rating') ? round($category->courses->avg('reviews_avg_rating'), 1) : 0,
+                    'free_courses' => $category->courses->where('is_free', true)->count(),
+                    'paid_courses' => $category->courses->where('is_free', false)->count(),
+                    'approved_courses' => $category->courses->where('status', 'approved')->count(),
+                    'pending_courses' => $category->courses->where('status', 'pending')->count(),
+                    'draft_courses' => $category->courses->where('status', 'draft')->count(),
+                ],
+                
+                // Related degrees
+                'degrees' => $this->getRelatedDegrees($category),
+                
+                // Related learning paths
+                'learning_paths' => $this->getRelatedLearningPaths($category),
+                
+                // Top instructors
+                'top_instructors' => $this->getTopInstructors($category),
+                
+                // Recent courses (last 5)
+                'recent_courses' => $this->getRecentCourses($category),
+                
+                // Featured courses
+                'featured_courses' => $this->getFeaturedCourses($category),
+                
+                // Analytics
+                'analytics' => $this->getCategoryAnalytics($category),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $categories,
+            'message' => 'Categories retrieved successfully',
+        ]);
     }
 
     /**

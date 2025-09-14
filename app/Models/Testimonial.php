@@ -45,8 +45,8 @@ class Testimonial extends Model
             return $this->user_image;
         }
 
-        // Return the full path to the image from public directory
-        return asset($this->user_image);
+        // Return the full path to the image
+        return asset('storage/'.$this->user_image);
     }
 
     /**

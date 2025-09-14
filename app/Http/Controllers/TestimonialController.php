@@ -47,10 +47,7 @@ class TestimonialController extends Controller
         try {
             // Handle image upload
             if ($request->hasFile('user_image')) {
-                $image = $request->file('user_image');
-                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = 'testimonials/' . $filename;
-                $image->move(public_path('testimonials'), $filename);
+                $imagePath = $request->file('user_image')->store('testimonials', 'public');
                 $validated['user_image'] = $imagePath;
             }
 
@@ -108,14 +105,11 @@ class TestimonialController extends Controller
             // Handle image upload
             if ($request->hasFile('user_image')) {
                 // Delete old image if exists
-                if ($testimonial->user_image && file_exists(public_path($testimonial->user_image))) {
-                    unlink(public_path($testimonial->user_image));
+                if ($testimonial->user_image && Storage::disk('public')->exists($testimonial->user_image)) {
+                    Storage::disk('public')->delete($testimonial->user_image);
                 }
                 
-                $image = $request->file('user_image');
-                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $imagePath = 'testimonials/' . $filename;
-                $image->move(public_path('testimonials'), $filename);
+                $imagePath = $request->file('user_image')->store('testimonials', 'public');
                 $validated['user_image'] = $imagePath;
             }
 
@@ -144,8 +138,8 @@ class TestimonialController extends Controller
     {
         try {
             // Delete image if exists
-            if ($testimonial->user_image && file_exists(public_path($testimonial->user_image))) {
-                unlink(public_path($testimonial->user_image));
+            if ($testimonial->user_image && Storage::disk('public')->exists($testimonial->user_image)) {
+                Storage::disk('public')->delete($testimonial->user_image);
             }
 
             $testimonial->delete();

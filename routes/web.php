@@ -223,6 +223,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/applications', [App\Http\Controllers\AdminController::class, 'applications'])->name('applications');
     Route::get('/assessments', [App\Http\Controllers\AdminController::class, 'assessments'])->name('assessments');
     Route::get('/certificates', [App\Http\Controllers\AdminController::class, 'certificates'])->name('certificates');
+    Route::get('/testimonials', [App\Http\Controllers\AdminController::class, 'testimonials'])->name('testimonials');
+    Route::get('/testimonials/create', [App\Http\Controllers\AdminController::class, 'createTestimonial'])->name('testimonials.create');
+    Route::post('/testimonials', [App\Http\Controllers\AdminController::class, 'storeTestimonial'])->name('testimonials.store');
+    Route::get('/testimonials/{testimonial}/edit', [App\Http\Controllers\AdminController::class, 'editTestimonial'])->name('testimonials.edit');
+    Route::put('/testimonials/{testimonial}', [App\Http\Controllers\AdminController::class, 'updateTestimonial'])->name('testimonials.update');
     Route::get('/partners', [App\Http\Controllers\AdminController::class, 'partners'])->name('partners');
     Route::get('/degrees', [App\Http\Controllers\AdminController::class, 'degrees'])->name('degrees');
     Route::get('/learning-paths', [App\Http\Controllers\AdminController::class, 'learningPaths'])->name('learning-paths');
