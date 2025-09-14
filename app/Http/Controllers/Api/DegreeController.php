@@ -23,7 +23,8 @@ class DegreeController extends Controller
                     ->whereIn('status', ['draft', 'pending', 'approved'])
                     ->orderBy('created_at', 'desc');
             },
-            'instructors:id,name,profile_photo_path'
+            'instructors:id,name,profile_photo_path',
+            'category:id,name,slug,code'
         ])
         ->withCount('courses')
         ->withAvg('courses', 'price')
@@ -55,6 +56,12 @@ class DegreeController extends Controller
                 'sort_order' => $degree->sort_order,
                 'created_at' => $degree->created_at,
                 'updated_at' => $degree->updated_at,
+                'category' => $degree->category ? [
+                    'id' => $degree->category->id,
+                    'name' => $degree->category->name,
+                    'slug' => $degree->category->slug,
+                    'code' => $degree->category->code,
+                ] : null,
                 
                 // Related courses data
                 'courses' => $degree->courses->map(function ($course) {
@@ -187,6 +194,7 @@ class DegreeController extends Controller
             'provider' => 'nullable|string|max:255',
             'level' => 'required|integer|unique:degrees,level',
             'description' => 'nullable|string',
+            'category_id' => 'nullable|integer|exists:categories,id',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ]);
@@ -214,7 +222,8 @@ class DegreeController extends Controller
                     ->whereIn('status', ['draft', 'pending', 'approved'])
                     ->orderBy('created_at', 'desc');
             },
-            'instructors:id,name,profile_photo_path'
+            'instructors:id,name,profile_photo_path',
+            'category:id,name,slug,code'
         ]);
 
         // Get degree statistics
@@ -250,6 +259,12 @@ class DegreeController extends Controller
                 'sort_order' => $degree->sort_order,
                 'created_at' => $degree->created_at,
                 'updated_at' => $degree->updated_at,
+                'category' => $degree->category ? [
+                    'id' => $degree->category->id,
+                    'name' => $degree->category->name,
+                    'slug' => $degree->category->slug,
+                    'code' => $degree->category->code,
+                ] : null,
             ],
             'stats' => $stats,
             'categories' => $categories,
@@ -305,6 +320,7 @@ class DegreeController extends Controller
             'provider' => 'nullable|string|max:255',
             'level' => 'sometimes|integer|unique:degrees,level,'.$degree->id,
             'description' => 'nullable|string',
+            'category_id' => 'nullable|integer|exists:categories,id',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ]);

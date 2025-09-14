@@ -1,20 +1,20 @@
-@php
+<?php
     $title = 'إضافة دورة جديدة';
-@endphp
-@extends('layouts.dash')
-@section('content')
+?>
+
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 font-arabic">
   <div class="space-y-8 p-6">
     
     <!-- Success/Error Notifications -->
-    @if(session('success'))
+    <?php if(session('success')): ?>
     <div class="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6 animate-slide-down">
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <i class="ti ti-check-circle text-green-400 text-xl"></i>
         </div>
         <div class="mr-3">
-          <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+          <p class="text-sm font-medium text-green-800"><?php echo e(session('success')); ?></p>
         </div>
         <div class="mr-auto pl-3">
           <div class="-mx-1.5 -my-1.5">
@@ -25,16 +25,16 @@
         </div>
       </div>
     </div>
-    @endif
+    <?php endif; ?>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
     <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 animate-slide-down">
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <i class="ti ti-alert-circle text-red-400 text-xl"></i>
         </div>
         <div class="mr-3">
-          <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+          <p class="text-sm font-medium text-red-800"><?php echo e(session('error')); ?></p>
         </div>
         <div class="mr-auto pl-3">
           <div class="-mx-1.5 -my-1.5">
@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-    @endif
+    <?php endif; ?>
 
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between animate-fade-in">
@@ -59,7 +59,7 @@
         </p>
       </div>
       <div class="mt-4 sm:mt-0">
-        <a href="{{ route('courses.index') }}" 
+        <a href="<?php echo e(route('courses.index')); ?>" 
            class="group inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl font-semibold text-sm text-gray-700 shadow-lg hover:shadow-xl hover:bg-white hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300">
           <i class="ti ti-arrow-right mr-2 group-hover:-translate-x-1 transition-transform duration-300"></i>
           العودة للدورات
@@ -96,11 +96,11 @@
           </template>
         </div>
 
-        <form method="POST" action="{{ route('courses.store') }}" enctype="multipart/form-data" class="space-y-8">
-          @csrf
+        <form method="POST" action="<?php echo e(route('courses.store')); ?>" enctype="multipart/form-data" class="space-y-8">
+          <?php echo csrf_field(); ?>
           
           <!-- Validation Errors -->
-          @if($errors->any())
+          <?php if($errors->any()): ?>
             <div class="bg-red-50 border border-red-200 rounded-2xl p-4 animate-shake">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
@@ -109,14 +109,14 @@
                 <div class="mr-3">
                   <h3 class="text-sm font-medium text-red-800">يرجى تصحيح الأخطاء التالية:</h3>
                   <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
-                    @foreach($errors->all() as $error)
-                      <li>{{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                   </ul>
                 </div>
               </div>
             </div>
-          @endif
+          <?php endif; ?>
 
           <!-- Step 1: Basic Information -->
           <div class="space-y-6" x-show="step===1">
@@ -131,31 +131,59 @@
                 <input type="text" 
                        id="title" 
                        name="title" 
-                       value="{{ old('title') }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('title') border-red-300 @enderror"
+                       value="<?php echo e(old('title')); ?>"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                        required>
-                @error('title')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
               
               <div>
                 <label for="price" class="block text-sm font-medium text-gray-700 mb-2">السعر</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <img src="{{ asset('riyal.svg') }}" alt="ريال" class="w-4 h-4 text-gray-500">
+                    <img src="<?php echo e(asset('riyal.svg')); ?>" alt="ريال" class="w-4 h-4 text-gray-500">
                   </div>
                   <input type="number" 
                          step="0.01" 
                          id="price" 
                          name="price" 
-                         value="{{ old('price') }}"
-                         class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('price') border-red-300 @enderror"
+                         value="<?php echo e(old('price')); ?>"
+                         class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['price'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                          required>
                 </div>
-                @error('price')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <?php $__errorArgs = ['price'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
             </div>
             
@@ -164,14 +192,28 @@
               <input type="text" 
                      id="code" 
                      name="code" 
-                     value="{{ old('code') }}"
+                     value="<?php echo e(old('code')); ?>"
                      placeholder="CRS-001"
-                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('code') border-red-300 @enderror"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                      style="font-family: Arial, sans-serif;"
                      required>
-              @error('code')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-              @enderror
+              <?php $__errorArgs = ['code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+              <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               <small class="text-gray-500">معرف قصير للدورة</small>
             </div>
             
@@ -180,11 +222,25 @@
               <textarea id="description" 
                         name="description" 
                         rows="4"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('description') border-red-300 @enderror"
-                        required>{{ old('description') }}</textarea>
-              @error('description')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-              @enderror
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                        required><?php echo e(old('description')); ?></textarea>
+              <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+              <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
           </div>
 
@@ -201,11 +257,25 @@
                 <input type="number" 
                        id="estimated_duration" 
                        name="estimated_duration" 
-                       value="{{ old('estimated_duration') }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('estimated_duration') border-red-300 @enderror">
-                @error('estimated_duration')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                       value="<?php echo e(old('estimated_duration')); ?>"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['estimated_duration'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                <?php $__errorArgs = ['estimated_duration'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
               
               <div>
@@ -213,12 +283,26 @@
                 <input type="number" 
                        id="duration_days" 
                        name="duration_days" 
-                       value="{{ old('duration_days') }}"
+                       value="<?php echo e(old('duration_days')); ?>"
                        min="1"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('duration_days') border-red-300 @enderror">
-                @error('duration_days')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['duration_days'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                <?php $__errorArgs = ['duration_days'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
             </div>
             
@@ -228,12 +312,26 @@
                 <input type="text" 
                        id="awarding_institution" 
                        name="awarding_institution" 
-                       value="{{ old('awarding_institution') }}"
+                       value="<?php echo e(old('awarding_institution')); ?>"
                        placeholder="مثال: جامعة الملك سعود"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('awarding_institution') border-red-300 @enderror">
-                @error('awarding_institution')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['awarding_institution'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                <?php $__errorArgs = ['awarding_institution'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
               
               <div>
@@ -246,31 +344,59 @@
                 <label for="instructor_id" class="block text-sm font-medium text-gray-700 mb-2">المدرب *</label>
                 <select id="instructor_id" 
                         name="instructor_id" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('instructor_id') border-red-300 @enderror"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['instructor_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                         required>
                   <option value="">اختر المدرب</option>
-                  @foreach($instructors as $instructor)
-                    <option value="{{ $instructor->id }}" @selected(old('instructor_id') == $instructor->id)>{{ $instructor->name }}</option>
-                  @endforeach
+                  <?php $__currentLoopData = $instructors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $instructor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($instructor->id); ?>" <?php if(old('instructor_id') == $instructor->id): echo 'selected'; endif; ?>><?php echo e($instructor->name); ?></option>
+                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
-                @error('instructor_id')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <?php $__errorArgs = ['instructor_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
               
               <div>
                 <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">القسم</label>
                 <select id="category_id" 
                         name="category_id" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('category_id') border-red-300 @enderror">
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['category_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
                   <option value="">اختر القسم</option>
-                  @foreach(\App\Models\Category::orderBy('name')->get() as $category)
-                    <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>{{ $category->name }}</option>
-                  @endforeach
+                  <?php $__currentLoopData = \App\Models\Category::orderBy('name')->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($category->id); ?>" <?php if(old('category_id') == $category->id): echo 'selected'; endif; ?>><?php echo e($category->name); ?></option>
+                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
-                @error('category_id')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <?php $__errorArgs = ['category_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
               </div>
             </div>
             
@@ -280,11 +406,11 @@
                 <select id="status" 
                         name="status" 
                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
-                  <option value="draft" @selected(old('status') === 'draft')>مسودة</option>
-                  <option value="pending" @selected(old('status') === 'pending' || (!old('status') && !auth()->user()->hasRole('admin')))>في انتظار الموافقة</option>
-                  @if(auth()->user()->hasRole('admin'))
-                  <option value="approved" @selected(old('status') === 'approved' || (!old('status') && auth()->user()->hasRole('admin')))>موافق عليها</option>
-                  @endif
+                  <option value="draft" <?php if(old('status') === 'draft'): echo 'selected'; endif; ?>>مسودة</option>
+                  <option value="pending" <?php if(old('status') === 'pending' || (!old('status') && !auth()->user()->hasRole('admin'))): echo 'selected'; endif; ?>>في انتظار الموافقة</option>
+                  <?php if(auth()->user()->hasRole('admin')): ?>
+                  <option value="approved" <?php if(old('status') === 'approved' || (!old('status') && auth()->user()->hasRole('admin'))): echo 'selected'; endif; ?>>موافق عليها</option>
+                  <?php endif; ?>
                 </select>
               </div>
               
@@ -308,10 +434,24 @@
                      id="image" 
                      name="image" 
                      accept="image/*"
-                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('image') border-red-300 @enderror">
-              @error('image')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-              @enderror
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+              <?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+              <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
           </div>
 
@@ -371,7 +511,7 @@
           <!-- Wizard Navigation -->
           <div class="flex items-center justify-between pt-8 border-t border-gray-200">
             <div>
-              <a href="{{ route('courses.index') }}" class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-xl font-semibold text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">إلغاء</a>
+              <a href="<?php echo e(route('courses.index')); ?>" class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-xl font-semibold text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">إلغاء</a>
             </div>
             <div class="flex items-center gap-3">
               <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-800 rounded-xl shadow hover:bg-gray-200" @click="prev()" x-show="step>1">السابق</button>
@@ -465,4 +605,5 @@
     });
   });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.dash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\ahmed\Documents\asta\asss\resources\views/courses/create.blade.php ENDPATH**/ ?>

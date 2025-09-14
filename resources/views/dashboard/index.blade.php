@@ -343,7 +343,7 @@
     </div>
 
     <!-- Testimonials Section -->
-    <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-8 mb-10 hover:shadow-2xl transition-all duration-300 cursor-pointer font-arabic" onclick="window.location.href='{{ route('admin.testimonials') }}'">
+    <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-8 mb-10 hover:shadow-2xl transition-all duration-300 cursor-pointer font-arabic" onclick="window.location.href='{{ route('admin.testimonials.index') }}'">
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center space-x-3 rtl:space-x-reverse">
                 <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
@@ -589,7 +589,7 @@
 <script>
 function editTestimonialFromDashboard(id) {
     // Redirect to testimonials management page with edit parameter
-    window.location.href = `{{ route('admin.testimonials') }}?edit=${id}`;
+    window.location.href = `{{ route('admin.testimonials.index') }}?edit=${id}`;
 }
 
 // Real-time clock functionality

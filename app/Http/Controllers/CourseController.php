@@ -110,7 +110,9 @@ class CourseController extends Controller
     public function create()
     {
         $careerLevels = \App\Models\Degree::orderBy('name')->get(['id','name']);
-        return view('courses.create', compact('careerLevels'));
+        $instructors = \App\Models\User::role('instructor')->orderBy('name')->get(['id','name']);
+        $isAdmin = auth()->user()->hasRole('admin');
+        return view('courses.create', compact('careerLevels', 'instructors', 'isAdmin'));
     }
 
     public function store(Request $request)
@@ -121,8 +123,11 @@ class CourseController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'estimated_duration' => 'nullable|numeric|min:0',
+            'duration_days' => 'nullable|integer|min:1',
+            'awarding_institution' => 'nullable|string|max:255',
             'difficulty_level' => 'nullable|string|in:beginner,intermediate,advanced',
             'category_id' => 'nullable|integer|exists:categories,id',
+            'instructor_id' => 'required|integer|exists:users,id',
             'image' => 'nullable|image|max:2048',
             // new: degrees from checkboxes
             'degree_ids' => 'sometimes|array',
@@ -153,8 +158,15 @@ class CourseController extends Controller
             unset($validated['image']); // Remove image key since we store as thumbnail
         }
 
-        $validated['instructor_id'] = auth()->id();
-        $validated['status'] = 'draft';
+        // Only set instructor_id to current user if it's not already set from the form
+        if (!isset($validated['instructor_id'])) {
+            $validated['instructor_id'] = auth()->id();
+        }
+        
+        // Set default status if not provided
+        if (!isset($validated['status'])) {
+            $validated['status'] = 'draft';
+        }
 
         $course = Course::create($validated);
         if (! empty($validated['learning_path_ids'])) {
@@ -234,10 +246,14 @@ class CourseController extends Controller
         $this->authorize('update', $course);
 
         $learningPaths = \App\Models\LearningPath::orderBy('name')->get(['id', 'name']);
+        $instructors = \App\Models\User::role('instructor')->orderBy('name')->get(['id','name']);
+        $isAdmin = auth()->user()->hasRole('admin');
 
         return view('courses.edit', [
             'course' => $course->load(['materials', 'instructor', 'category', 'learningPaths']),
             'learningPaths' => $learningPaths,
+            'instructors' => $instructors,
+            'isAdmin' => $isAdmin,
         ]);
     }
 
@@ -253,6 +269,9 @@ class CourseController extends Controller
             'estimated_duration' => 'nullable|numeric|min:0',
             'difficulty_level' => 'nullable|string|in:beginner,intermediate,advanced',
             'category_id' => 'nullable|integer|exists:categories,id',
+            'instructor_id' => 'required|integer|exists:users,id',
+            'duration_days' => 'nullable|integer|min:1',
+            'awarding_institution' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:draft,pending,approved,rejected',
             'image' => 'nullable|image|max:2048',
             'learning_path_ids' => 'sometimes|array',

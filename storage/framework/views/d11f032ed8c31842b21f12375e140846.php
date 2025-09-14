@@ -13,7 +13,7 @@
             <p class="text-gray-600" style="font-size: 1.1rem;">إدارة شهادات العملاء والمراجعات</p>
           </div>
         </div>
-        <a href="<?php echo e(route('testimonials.create')); ?>" 
+        <a href="<?php echo e(route('admin.testimonials.create')); ?>" 
            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-2xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
           <i class="ti ti-plus mr-2"></i>إضافة شهادة جديدة
         </a>
@@ -147,14 +147,14 @@
                   <td class="py-4 px-6">
                     <div class="flex items-center space-x-2 rtl:space-x-reverse">
                       <!-- View -->
-                      <a href="<?php echo e(route('testimonials.show', $testimonial)); ?>" 
+                      <a href="<?php echo e(route('admin.testimonials.show', $testimonial)); ?>" 
                          class="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors duration-200"
                          title="عرض">
                         <i class="ti ti-eye"></i>
                       </a>
 
                       <!-- Edit -->
-                      <a href="<?php echo e(route('testimonials.edit', $testimonial)); ?>" 
+                      <a href="<?php echo e(route('admin.testimonials.edit', $testimonial)); ?>" 
                          class="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition-colors duration-200"
                          title="تعديل">
                         <i class="ti ti-edit"></i>
@@ -175,7 +175,7 @@
                       </button>
 
                       <!-- Delete -->
-                      <form action="<?php echo e(route('testimonials.destroy', $testimonial)); ?>" method="POST" class="inline"
+                      <form action="<?php echo e(route('admin.testimonials.destroy', $testimonial)); ?>" method="POST" class="inline"
                             onsubmit="return confirm('هل أنت متأكد من حذف هذه الشهادة؟')">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('DELETE'); ?>
@@ -206,7 +206,7 @@
             </div>
             <h3 class="text-xl font-semibold text-gray-700 mb-2">لا توجد شهادات</h3>
             <p class="text-gray-500 mb-6">لم يتم إضافة أي شهادات بعد</p>
-            <a href="<?php echo e(route('testimonials.create')); ?>" 
+            <a href="<?php echo e(route('admin.testimonials.create')); ?>" 
                class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-2xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
               <i class="ti ti-plus mr-2"></i>إضافة أول شهادة
             </a>
@@ -219,7 +219,7 @@
 
 <script>
 function toggleApproval(testimonialId) {
-  fetch(`/testimonials/${testimonialId}/toggle-approval`, {
+  fetch(`/admin/testimonials/${testimonialId}/toggle-approval`, {
     method: 'POST',
     headers: {
       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -241,7 +241,7 @@ function toggleApproval(testimonialId) {
 }
 
 function toggleFeatured(testimonialId) {
-  fetch(`/testimonials/${testimonialId}/toggle-featured`, {
+  fetch(`/admin/testimonials/${testimonialId}/toggle-featured`, {
     method: 'POST',
     headers: {
       'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

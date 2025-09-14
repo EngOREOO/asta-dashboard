@@ -708,7 +708,7 @@ class AdminController extends Controller
 
         Testimonial::create($validated);
 
-        return redirect()->route('admin.testimonials')
+        return redirect()->route('admin.testimonials.index')
             ->with('success', 'تم إضافة الرأي بنجاح.');
     }
 

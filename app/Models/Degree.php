@@ -26,6 +26,7 @@ class Degree extends Model
         'sort_order',
         'duration_months',
         'credit_hours',
+        'category_id',
     ];
 
     /**
@@ -54,5 +55,13 @@ class Degree extends Model
     public function instructors()
     {
         return $this->belongsToMany(User::class, 'courses', 'degree_id', 'instructor_id')->distinct();
+    }
+
+    /**
+     * Get the category that owns the degree.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

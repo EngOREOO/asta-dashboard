@@ -9,7 +9,7 @@
           </div>
           <div class="flex items-center space-x-4">
             <Link
-              :href="route('testimonials.index')"
+              :href="route('admin.testimonials.index')"
               class="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
             >
               العودة للقائمة
@@ -128,7 +128,7 @@
           <!-- Submit Buttons -->
           <div class="flex items-center justify-end space-x-4 rtl:space-x-reverse">
             <Link
-              :href="route('testimonials.index')"
+              :href="route('admin.testimonials.index')"
               class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
               إلغاء
@@ -187,12 +187,12 @@ const submitForm = () => {
     formData.append('user_image', form.user_image)
   }
 
-  router.post(route('testimonials.store'), formData, {
+  router.post(route('admin.testimonials.store'), formData, {
     onFinish: () => {
       isSubmitting.value = false
     },
     onSuccess: () => {
-      router.visit(route('testimonials.index'))
+      router.visit(route('admin.testimonials.index'))
     }
   })
 }

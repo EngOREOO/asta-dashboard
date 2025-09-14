@@ -1,15 +1,15 @@
-@php($title = 'تعديل مسار مهني')
-@extends('layouts.dash')
-@section('content')
+<?php ($title = 'إنشاء مسار مهني'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 font-arabic">
   <div class="space-y-8 p-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between animate-fade-in">
       <div class="space-y-2">
-        <h1 class="font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent" style="font-size: 1.9rem;">تعديل مسار مهني</h1>
-        <p class="text-gray-600" style="font-size: 1.3rem;">تحديث معلومات المسار: {{ $degree->name }}</p>
+        <h1 class="font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent" style="font-size: 1.9rem;">إنشاء مسار مهني</h1>
+        <p class="text-gray-600" style="font-size: 1.3rem;">أدخل معلومات المسار</p>
       </div>
       <div class="mt-4 sm:mt-0">
-        <a href="{{ route('degrees.index') }}" class="inline-flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50 shadow-sm" style="font-size: 1.3rem;">
+        <a href="<?php echo e(route('degrees.index')); ?>" class="inline-flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50 shadow-sm" style="font-size: 1.3rem;">
           <i class="ti ti-arrow-right mr-2"></i>
           العودة للمسارات
         </a>
@@ -24,67 +24,101 @@
             <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mr-4 backdrop-blur-sm">
               <i class="ti ti-certificate text-white text-xl"></i>
             </div>
-            نموذج تعديل مسار
+            نموذج إنشاء مسار
           </h2>
         </div>
       </div>
 
       <div class="p-8">
-        <form action="{{ route('degrees.update', $degree) }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          @csrf
-          @method('PUT')
+        <form action="<?php echo e(route('degrees.store')); ?>" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <?php echo csrf_field(); ?>
 
           <div class="md:col-span-2">
             <label for="name" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">اسم المسار *</label>
-            <input id="name" name="name" type="text" value="{{ old('name', $degree->name) }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" required>
-            @error('name')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            <input id="name" name="name" type="text" value="<?php echo e(old('name')); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" required>
+            <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div>
             <label for="code" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">كود المسار</label>
-            <input id="code" name="code" type="text" value="{{ old('code', $degree->code) }}" placeholder="EX-123" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem; font-family: Arial, sans-serif;">
+            <input id="code" name="code" type="text" value="<?php echo e(old('code')); ?>" placeholder="EX-123" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem; font-family: Arial, sans-serif;">
             <small class="text-gray-500">اختياري: معرف قصير للمسار</small>
           </div>
 
           <div>
-            <label for="level" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المستوى *</label>
+            <label for="level" class="block text-gray-700 mb-2" style="font-size: 1.3rem;"> المستوي المهني *</label>
             <select id="level" name="level" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" required>
-              <option value="">اختر المستوى</option>
-              @foreach(($careerLevels ?? collect()) as $cl)
-                <option value="{{ $cl->id }}" {{ old('level', $degree->level) == $cl->id ? 'selected' : '' }}>{{ $cl->name }}</option>
-              @endforeach
+              <option value="">اختر المستوي المهني</option>
+              <?php $__currentLoopData = ($careerLevels ?? collect()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cl): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($cl->id); ?>" <?php echo e(old('level') == $cl->id ? 'selected' : ''); ?>><?php echo e($cl->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
-            @error('level')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            <?php $__errorArgs = ['level'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div>
             <label for="category_id" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الاقسام</label>
             <select id="category_id" name="category_id" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
               <option value="">اختر القسم</option>
-              @foreach(($categories ?? collect()) as $category)
-                <option value="{{ $category->id }}" {{ old('category_id', $degree->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-              @endforeach
+              <?php $__currentLoopData = ($categories ?? collect()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($category->id); ?>" <?php echo e(old('category_id') == $category->id ? 'selected' : ''); ?>><?php echo e($category->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
-            @error('category_id')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            <?php $__errorArgs = ['category_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div>
             <label for="duration_months" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المدة (أشهر)</label>
-            <input id="duration_months" name="duration_months" type="number" value="{{ old('duration_months', $degree->duration_months) }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="1">
+            <input id="duration_months" name="duration_months" type="number" value="<?php echo e(old('duration_months')); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="1">
             <small class="text-gray-500">المدة المتوقعة لإكمال البرنامج</small>
-            @error('duration_months')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            <?php $__errorArgs = ['duration_months'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div>
             <label for="credit_hours" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">عدد الساعات المعتمدة</label>
-            <input id="credit_hours" name="credit_hours" type="number" value="{{ old('credit_hours', $degree->credit_hours) }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="0">
+            <input id="credit_hours" name="credit_hours" type="number" value="<?php echo e(old('credit_hours')); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="0">
             <small class="text-gray-500">إجمالي الساعات المعتمدة للمسار (اختياري)</small>
           </div>
 
           <div class="md:col-span-2">
             <label for="description" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الوصف</label>
-            <textarea id="description" name="description" rows="3" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">{{ old('description', $degree->description) }}</textarea>
-            @error('description')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            <textarea id="description" name="description" rows="3" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;"><?php echo e(old('description')); ?></textarea>
+            <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="md:col-span-3">
@@ -102,34 +136,49 @@
                     <input type="text" class="search-input w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="البحث في الدورات..." style="font-size: 1.2rem;">
                   </div>
                   <div class="course-list">
-                    @foreach($courses as $course)
+                    <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                       <label class="flex items-center p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
-                        <input type="checkbox" name="courses[]" value="{{ $course->id }}" 
-                               {{ in_array($course->id, old('courses', $selectedCourses)) ? 'checked' : '' }}
+                        <input type="checkbox" name="courses[]" value="<?php echo e($course->id); ?>" 
+                               <?php echo e(in_array($course->id, old('courses', [])) ? 'checked' : ''); ?>
+
                                class="course-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3">
-                        <span class="course-title" style="font-size: 1.2rem;">{{ $course->title }}</span>
+                        <span class="course-title" style="font-size: 1.2rem;"><?php echo e($course->title); ?></span>
                       </label>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                   </div>
                 </div>
               </div>
             </div>
             <small class="text-gray-500">انقر لفتح قائمة الدورات واختر ما تريد</small>
-            @error('courses')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
-            @error('courses.*')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+            <?php $__errorArgs = ['courses'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+            <?php $__errorArgs = ['courses.*'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
           </div>
 
           <div class="md:col-span-2">
             <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">نشط</label>
             <label class="inline-flex items-center gap-2">
-              <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $degree->is_active) ? 'checked' : '' }}>
+              <input class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" type="checkbox" id="is_active" name="is_active" value="1" <?php echo e(old('is_active', true) ? 'checked' : ''); ?>>
               <span style="font-size: 1.3rem;">نشط</span>
             </label>
           </div>
 
           <div class="md:col-span-2 flex items-center gap-3 pt-2">
-            <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl shadow hover:shadow-lg hover:from-indigo-700 hover:to-blue-700 transition" style="font-size: 1.3rem;">حفظ التغييرات</button>
-            <a href="{{ route('degrees.index') }}" class="inline-flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50 shadow-sm" style="font-size: 1.3rem;">إلغاء</a>
+            <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl shadow hover:shadow-lg hover:from-indigo-700 hover:to-blue-700 transition" style="font-size: 1.3rem;">إنشاء المسار</button>
+            <a href="<?php echo e(route('degrees.index')); ?>" class="inline-flex items-center px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50 shadow-sm" style="font-size: 1.3rem;">إلغاء</a>
           </div>
         </form>
       </div>
@@ -251,4 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
   updateSelectedItems();
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.dash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\ahmed\Documents\asta\asss\resources\views/degrees/create.blade.php ENDPATH**/ ?>

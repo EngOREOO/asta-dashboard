@@ -308,7 +308,7 @@ const filters = ref({
 const stats = ref({})
 
 const filterTestimonials = () => {
-  router.get(route('testimonials.index'), filters.value, {
+  router.get(route('admin.testimonials.index'), filters.value, {
     preserveState: true,
     preserveScroll: true,
   })

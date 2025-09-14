@@ -311,6 +311,24 @@
             <span class="font-medium text-gray-900" style="font-size: 1.3rem;">{{ $course->language ?? 'غير محدد' }}</span>
           </div>
           
+          @if($course->duration_days)
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span class="text-gray-600 flex items-center" style="font-size: 1.3rem;">
+              <i class="ti ti-calendar-event mr-2 text-gray-400"></i>مدة الدوره بالأيام:
+            </span>
+            <span class="font-medium text-gray-900" style="font-size: 1.3rem;">{{ $course->duration_days }} يوم</span>
+          </div>
+          @endif
+          
+          @if($course->awarding_institution)
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span class="text-gray-600 flex items-center" style="font-size: 1.3rem;">
+              <i class="ti ti-building mr-2 text-gray-400"></i>الجهه المانحه:
+            </span>
+            <span class="font-medium text-gray-900" style="font-size: 1.3rem;">{{ $course->awarding_institution }}</span>
+          </div>
+          @endif
+          
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <span class="text-gray-600 flex items-center" style="font-size: 1.3rem;">
               <i class="ti ti-calendar mr-2 text-gray-400"></i>تاريخ الإنشاء:

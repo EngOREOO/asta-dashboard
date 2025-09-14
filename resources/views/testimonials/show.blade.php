@@ -15,11 +15,11 @@
           </div>
         </div>
         <div class="flex items-center space-x-4 rtl:space-x-reverse">
-          <a href="{{ route('testimonials.edit', $testimonial) }}" 
+          <a href="{{ route('admin.testimonials.edit', $testimonial) }}" 
              class="bg-gradient-to-r from-green-600 to-teal-600 text-white px-6 py-3 rounded-2xl font-semibold hover:from-green-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl">
             <i class="ti ti-edit mr-2"></i>تعديل
           </a>
-          <a href="{{ route('testimonials.index') }}" 
+          <a href="{{ route('admin.testimonials.index') }}" 
              class="bg-white/70 backdrop-blur-xl shadow-lg rounded-2xl px-6 py-3 text-gray-700 font-semibold hover:shadow-xl transition-all duration-300 border border-white/20">
             <i class="ti ti-arrow-right mr-2"></i>العودة للقائمة
           </a>
@@ -187,7 +187,7 @@
             </button>
 
             <!-- Delete -->
-            <form action="{{ route('testimonials.destroy', $testimonial) }}" method="POST" 
+            <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" 
                   onsubmit="return confirm('هل أنت متأكد من حذف هذه الشهادة؟')">
               @csrf
               @method('DELETE')

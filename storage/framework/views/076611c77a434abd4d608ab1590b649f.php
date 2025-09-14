@@ -311,8 +311,8 @@
                             <span>التعليقات</span>
                         </a>
                         <?php endif; ?>
-                        <?php if(Route::has('testimonials.index') && auth()->user()->can('testimonials.read')): ?>
-                        <a href="<?php echo e(route('testimonials.index')); ?>" 
+                        <?php if(Route::has('admin.testimonials.index') && auth()->user()->can('testimonials.read')): ?>
+                        <a href="<?php echo e(route('admin.testimonials.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-purple-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'testimonials'">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('testimonials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
@@ -546,7 +546,7 @@
                             </div>
                             <span>الشركاء</span>
                         </a>
-                        <a href="<?php echo e(route('testimonials.index')); ?>" 
+                        <a href="<?php echo e(route('admin.testimonials.index')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'testimonials'">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('testimonials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">

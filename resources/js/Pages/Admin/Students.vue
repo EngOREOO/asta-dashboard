@@ -300,7 +300,7 @@
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-bold text-gray-900">آراء العملاء والتقييمات</h2>
             <Link
-              :href="route('admin.testimonials')"
+              :href="route('admin.testimonials.index')"
               class="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
             >
               إدارة جميع الآراء

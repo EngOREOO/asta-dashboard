@@ -28,6 +28,9 @@ Route::get('/testimonial', function () {
     return Inertia::render('TestimonialForm');
 })->name('testimonial.form');
 
+// Public testimonials listing
+Route::get('/testimonials', [\App\Http\Controllers\TestimonialController::class, 'publicIndex'])->name('testimonials.public');
+
 Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckDashboardAccess::class, \App\Http\Middleware\SessionTimeout::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -77,10 +80,6 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckDashboardAccess
     // Partners - Full CRUD functionality
     Route::resource('partners', \App\Http\Controllers\PartnerController::class);
 
-    // Testimonials - Full CRUD functionality
-    Route::resource('testimonials', \App\Http\Controllers\TestimonialController::class);
-    Route::post('testimonials/{testimonial}/toggle-approval', [\App\Http\Controllers\TestimonialController::class, 'toggleApproval'])->name('testimonials.toggle-approval');
-    Route::post('testimonials/{testimonial}/toggle-featured', [\App\Http\Controllers\TestimonialController::class, 'toggleFeatured'])->name('testimonials.toggle-featured');
 
     // Active Users Management
     Route::get('active-users', [\App\Http\Controllers\ActiveUsersController::class, 'index'])->name('active-users.index');
@@ -223,11 +222,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/applications', [App\Http\Controllers\AdminController::class, 'applications'])->name('applications');
     Route::get('/assessments', [App\Http\Controllers\AdminController::class, 'assessments'])->name('assessments');
     Route::get('/certificates', [App\Http\Controllers\AdminController::class, 'certificates'])->name('certificates');
-    Route::get('/testimonials', [App\Http\Controllers\AdminController::class, 'testimonials'])->name('testimonials');
-    Route::get('/testimonials/create', [App\Http\Controllers\AdminController::class, 'createTestimonial'])->name('testimonials.create');
-    Route::post('/testimonials', [App\Http\Controllers\AdminController::class, 'storeTestimonial'])->name('testimonials.store');
-    Route::get('/testimonials/{testimonial}/edit', [App\Http\Controllers\AdminController::class, 'editTestimonial'])->name('testimonials.edit');
-    Route::put('/testimonials/{testimonial}', [App\Http\Controllers\AdminController::class, 'updateTestimonial'])->name('testimonials.update');
+    // Testimonials - Full CRUD functionality (Admin only)
+    Route::resource('testimonials', \App\Http\Controllers\TestimonialController::class);
+    Route::post('testimonials/{testimonial}/toggle-approval', [\App\Http\Controllers\TestimonialController::class, 'toggleApproval'])->name('testimonials.toggle-approval');
+    Route::post('testimonials/{testimonial}/toggle-featured', [\App\Http\Controllers\TestimonialController::class, 'toggleFeatured'])->name('testimonials.toggle-featured');
     Route::get('/partners', [App\Http\Controllers\AdminController::class, 'partners'])->name('partners');
     Route::get('/degrees', [App\Http\Controllers\AdminController::class, 'degrees'])->name('degrees');
     Route::get('/learning-paths', [App\Http\Controllers\AdminController::class, 'learningPaths'])->name('learning-paths');

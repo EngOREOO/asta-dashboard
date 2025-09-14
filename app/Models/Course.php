@@ -39,6 +39,8 @@ class Course extends Model
         'difficulty_level',
         'language',
         'estimated_duration',
+        'duration_days',
+        'awarding_institution',
     ];
 
     protected $casts = [
@@ -48,6 +50,7 @@ class Course extends Model
         'allow_notes' => 'boolean',
         'allow_ratings' => 'boolean',
         'estimated_duration' => 'integer',
+        'duration_days' => 'integer',
     ];
 
     protected static function boot()

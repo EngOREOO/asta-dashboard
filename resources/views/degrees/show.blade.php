@@ -183,6 +183,13 @@
             <span class="text-sm text-gray-600">المعرف:</span>
             <span class="text-sm font-medium text-gray-900">#{{ $degree->id }}</span>
           </div>
+          
+          @if($degree->category)
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">القسم:</span>
+            <span class="text-sm font-medium text-gray-900">{{ $degree->category->name }}</span>
+          </div>
+          @endif
         </div>
       </x-admin.card>
 

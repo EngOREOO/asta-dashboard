@@ -71,7 +71,8 @@ class DegreeController extends Controller
     {
         $careerLevels = CareerLevel::orderBy('name')->get(['id','name']);
         $courses = Course::orderBy('title')->get(['id', 'title']);
-        return view('degrees.create', compact('careerLevels', 'courses'));
+        $categories = \App\Models\Category::orderBy('name')->get(['id', 'name']);
+        return view('degrees.create', compact('careerLevels', 'courses', 'categories'));
     }
 
     public function store(Request $request)
@@ -83,6 +84,7 @@ class DegreeController extends Controller
             'level' => 'required',
             'duration_months' => 'nullable|integer|min:1',
             'credit_hours' => 'nullable|integer|min:0',
+            'category_id' => 'nullable|integer|exists:categories,id',
             'is_active' => 'boolean',
             'courses' => 'nullable|array',
             'courses.*' => 'exists:courses,id',
@@ -110,7 +112,7 @@ class DegreeController extends Controller
 
     public function show(Degree $degree)
     {
-        $degree->load(['courses.instructor']);
+        $degree->load(['courses.instructor', 'category']);
 
         return view('degrees.show', compact('degree'));
     }
@@ -119,10 +121,11 @@ class DegreeController extends Controller
     {
         $careerLevels = CareerLevel::orderBy('name')->get(['id','name']);
         $courses = Course::orderBy('title')->get(['id', 'title']);
+        $categories = \App\Models\Category::orderBy('name')->get(['id', 'name']);
         $currentLevelString = $this->mapIntegerToLevel($degree->level);
         $selectedCourses = $degree->courses()->pluck('id')->toArray();
 
-        return view('degrees.edit', compact('degree', 'careerLevels', 'currentLevelString', 'courses', 'selectedCourses'));
+        return view('degrees.edit', compact('degree', 'careerLevels', 'currentLevelString', 'courses', 'selectedCourses', 'categories'));
     }
 
     public function update(Request $request, Degree $degree)
@@ -134,6 +137,7 @@ class DegreeController extends Controller
             'level' => 'required',
             'duration_months' => 'nullable|integer|min:1',
             'credit_hours' => 'nullable|integer|min:0',
+            'category_id' => 'nullable|integer|exists:categories,id',
             'is_active' => 'boolean',
             'courses' => 'nullable|array',
             'courses.*' => 'exists:courses,id',

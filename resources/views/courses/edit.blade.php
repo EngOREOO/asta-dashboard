@@ -91,7 +91,7 @@
       </div>
       
       <div class="p-8">
-        <form method="POST" action="{{ route('courses.update', $course) }}" enctype="multipart/form-data" class="space-y-8" style="font-size: 1.3rem;">
+        <form method="POST" action="{{ route('courses.update', $course) }}" enctype="multipart/form-data" class="space-y-8">
           @csrf
           @method('PUT')
           
@@ -123,7 +123,7 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
-                <label for="title" class="block text-gray-700 mb-2">عنوان الدورة</label>
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">عنوان الدورة</label>
                 <input type="text" 
                        id="title" 
                        name="title" 
@@ -136,7 +136,7 @@
               </div>
               
               <div>
-                <label for="price" class="block text-gray-700 mb-2">السعر</label>
+                <label for="price" class="block text-sm font-medium text-gray-700 mb-2">السعر</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <img src="{{ asset('riyal.svg') }}" alt="ريال" class="w-4 h-4 text-gray-500">
@@ -153,26 +153,93 @@
                   <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
+              
+              <div>
+                <label for="code" class="block text-sm font-medium text-gray-700 mb-2">كود الدورة</label>
+                <input type="text" 
+                       id="code" 
+                       name="code" 
+                       value="{{ old('code', $course->code) }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('code') border-red-300 @enderror"
+                       required>
+                @error('code')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
+                <label for="instructor_id" class="block text-sm font-medium text-gray-700 mb-2">المدرّس</label>
+                <select id="instructor_id" name="instructor_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('instructor_id') border-red-300 @enderror" required>
+                  <option value="">اختر المدرّس</option>
+                  @foreach($instructors as $instructor)
+                    <option value="{{ $instructor->id }}" {{ old('instructor_id', $course->instructor_id) == $instructor->id ? 'selected' : '' }}>
+                      {{ $instructor->name }}
+                    </option>
+                  @endforeach
+                </select>
+                @error('instructor_id')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
+                <label for="duration_days" class="block text-sm font-medium text-gray-700 mb-2">مدة الدوره بالأيام</label>
+                <input type="number" 
+                       id="duration_days" 
+                       name="duration_days" 
+                       value="{{ old('duration_days', $course->duration_days) }}"
+                       min="1"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('duration_days') border-red-300 @enderror">
+                @error('duration_days')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
+                <label for="awarding_institution" class="block text-sm font-medium text-gray-700 mb-2">الجهه المانحه</label>
+                <input type="text" 
+                       id="awarding_institution" 
+                       name="awarding_institution" 
+                       value="{{ old('awarding_institution', $course->awarding_institution) }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('awarding_institution') border-red-300 @enderror">
+                @error('awarding_institution')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
+                <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">الفئة</label>
+                <select id="category_id" name="category_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('category_id') border-red-300 @enderror">
+                  <option value="">اختر الفئة</option>
+                  @foreach(\App\Models\Category::orderBy('name')->get(['id', 'name']) as $category)
+                    <option value="{{ $category->id }}" {{ old('category_id', $course->category_id) == $category->id ? 'selected' : '' }}>
+                      {{ $category->name }}
+                    </option>
+                  @endforeach
+                </select>
+                @error('category_id')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              @if($isAdmin)
+              <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">الحالة</label>
+                <select id="status" name="status" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('status') border-red-300 @enderror">
+                  <option value="pending" {{ old('status', $course->status) == 'pending' ? 'selected' : '' }}>في انتظار الموافقة</option>
+                  <option value="approved" {{ old('status', $course->status) == 'approved' ? 'selected' : '' }}>موافق عليها</option>
+                  <option value="rejected" {{ old('status', $course->status) == 'rejected' ? 'selected' : '' }}>مرفوضة</option>
+                  <option value="draft" {{ old('status', $course->status) == 'draft' ? 'selected' : '' }}>مسودة</option>
+                </select>
+                @error('status')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+              @endif
             </div>
             
             <div>
-              <label for="code" class="block text-gray-700 mb-2">كود الدورة *</label>
-              <input type="text" 
-                     id="code" 
-                     name="code" 
-                     value="{{ old('code', $course->code) }}"
-                     placeholder="CRS-001"
-                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('code') border-red-300 @enderror"
-                     style="font-family: Arial, sans-serif;"
-                     required>
-              @error('code')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-              @enderror
-              <small class="text-gray-500">معرف قصير للدورة</small>
-            </div>
-            
-            <div>
-              <label for="description" class="block text-gray-700 mb-2">الوصف</label>
+              <label for="description" class="block text-sm font-medium text-gray-700 mb-2">وصف الدورة</label>
               <textarea id="description" 
                         name="description" 
                         rows="4"
@@ -184,187 +251,75 @@
             </div>
           </div>
 
-          <!-- Course Details -->
+          <!-- Course Image -->
           <div class="space-y-6">
             <h3 class="text-xl font-semibold text-gray-900 flex items-center">
-              <i class="ti ti-settings mr-2 text-purple-500"></i>
-              تفاصيل الدورة
-            </h3>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <label for="estimated_duration" class="block text-gray-700 mb-2">المدة المقدرة (ساعات)</label>
-                <input type="number" 
-                       id="estimated_duration" 
-                       name="estimated_duration" 
-                       value="{{ old('estimated_duration', $course->estimated_duration) }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('estimated_duration') border-red-300 @enderror">
-                @error('estimated_duration')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-              </div>
-              
-              <div>
-                <label for="difficulty_level" class="block text-gray-700 mb-2">المستوى</label>
-                <select id="difficulty_level" 
-                        name="difficulty_level" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('difficulty_level') border-red-300 @enderror">
-                  <option value="">اختر المستوى</option>
-                  <option value="beginner" @selected(old('difficulty_level', $course->difficulty_level) === 'beginner')>مبتدئ</option>
-                  <option value="intermediate" @selected(old('difficulty_level', $course->difficulty_level) === 'intermediate')>متوسط</option>
-                  <option value="advanced" @selected(old('difficulty_level', $course->difficulty_level) === 'advanced')>متقدم</option>
-                </select>
-                @error('difficulty_level')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <label for="category_id" class="block text-gray-700 mb-2">القسم</label>
-                <select id="category_id" 
-                        name="category_id" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('category_id') border-red-300 @enderror">
-                  <option value="">اختر القسم</option>
-                  @foreach(\App\Models\Category::orderBy('name')->get() as $category)
-                    <option value="{{ $category->id }}" @selected(old('category_id', $course->category_id) == $category->id)>{{ $category->name }}</option>
-                  @endforeach
-                </select>
-                @error('category_id')
-                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-              </div>
-              
-              <div>
-                <label for="status" class="block text-gray-700 mb-2">الحالة</label>
-                <select id="status" 
-                        name="status" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
-                  <option value="draft" @selected(old('status', $course->status) === 'draft')>مسودة</option>
-                  <option value="pending" @selected(old('status', $course->status) === 'pending')>في انتظار الموافقة</option>
-                  @if(auth()->user()->hasRole('admin'))
-                  <option value="approved" @selected(old('status', $course->status) === 'approved')>موافق عليها</option>
-                  <option value="rejected" @selected(old('status', $course->status) === 'rejected')>مرفوضة</option>
-                  @endif
-                </select>
-              </div>
-            </div>
-          </div>
-
-
-          <!-- Image Upload -->
-          <div class="space-y-6">
-            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
-              <i class="ti ti-photo mr-2 text-indigo-500"></i>
+              <i class="ti ti-photo mr-2 text-green-500"></i>
               صورة الدورة
             </h3>
             
-            <div>
-              <label for="image" class="block text-gray-700 mb-2">قم برفع صورة واضحة للدورة</label>
-              <div class="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 hover:border-indigo-300 transition-colors p-6 text-center">
-                <input type="file" id="image" name="image" accept="image/*" class="hidden" onchange="previewCourseImage(event)">
-                <label for="image" class="cursor-pointer inline-flex items-center px-5 py-3 bg-indigo-600 text-white rounded-xl shadow hover:bg-indigo-700">
-                  <i class="ti ti-upload mr-2"></i>
-                  اختر صورة
-                </label>
-                <p class="text-gray-500 mt-3">PNG أو JPG، بحد أقصى 2MB</p>
-                <div id="course-image-preview" class="mt-4 flex justify-center">
-                  @if($course->thumbnail && file_exists(public_path($course->thumbnail)))
-                    <img src="{{ asset($course->thumbnail) }}" alt="الصورة الحالية" class="w-64 h-40 object-cover rounded-2xl border border-gray-200 shadow-sm">
-                  @endif
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">صورة الدورة</label>
+                <input type="file" 
+                       id="image" 
+                       name="image" 
+                       accept="image/*"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('image') border-red-300 @enderror">
+                @error('image')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+              
+              @if($course->thumbnail)
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">الصورة الحالية</label>
+                <div class="relative">
+                  <img src="{{ asset('storage/' . $course->thumbnail) }}" 
+                       alt="صورة الدورة" 
+                       class="w-full h-48 object-cover rounded-xl border border-gray-200">
                 </div>
               </div>
-              @error('image')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-              @enderror
+              @endif
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex items-center justify-end space-x-4 space-x-reverse pt-8 border-t border-gray-200">
+          <!-- Learning Paths -->
+          @if($learningPaths->count() > 0)
+          <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+              <i class="ti ti-route mr-2 text-purple-500"></i>
+              مسارات التعلم
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              @foreach($learningPaths as $path)
+                <label class="flex items-center p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
+                  <input type="checkbox" 
+                         name="learning_path_ids[]" 
+                         value="{{ $path->id }}"
+                         {{ in_array($path->id, old('learning_path_ids', $course->learningPaths->pluck('id')->toArray())) ? 'checked' : '' }}
+                         class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                  <span class="mr-3 text-sm font-medium text-gray-700">{{ $path->name }}</span>
+                </label>
+              @endforeach
+            </div>
+          </div>
+          @endif
+
+          <!-- Submit Button -->
+          <div class="flex justify-end space-x-4 space-x-reverse pt-6 border-t border-gray-200">
             <a href="{{ route('courses.show', $course) }}" 
-               class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-xl font-semibold text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">
-              <i class="ti ti-x mr-2"></i>
+               class="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors duration-200">
               إلغاء
             </a>
-            @if($course->status === 'draft' && $course->instructor_id === auth()->id())
             <button type="submit" 
-                    name="submit_for_approval" 
-                    value="1"
-                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-widest hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
-              <i class="ti ti-send mr-2"></i>
-              إرسال للموافقة
-            </button>
-            @endif
-            <button type="submit" 
-                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-widest hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
-              <i class="ti ti-check mr-2"></i>
+                    class="px-8 py-3 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-xl hover:from-teal-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl">
+              <i class="ti ti-device-floppy mr-2"></i>
               حفظ التغييرات
             </button>
           </div>
         </form>
-
-        <!-- Admin Actions -->
-        @if(auth()->user()->hasRole('admin') && $course->status === 'pending')
-        <div class="mt-8 pt-8 border-t border-gray-200">
-          <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <i class="ti ti-shield text-blue-400 text-xl"></i>
-              </div>
-              <div class="mr-4">
-                <h3 class="text-lg font-medium text-blue-800">إجراءات الإدارة</h3>
-                <p class="text-sm text-blue-600 mt-1">موافقة أو رفض الدورة</p>
-              </div>
-            </div>
-            <div class="mt-4 flex gap-3">
-              <form method="POST" action="{{ route('courses.approve', $course) }}" class="inline">
-                @csrf
-                <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-widest hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
-                  <i class="ti ti-check mr-2"></i>
-                  موافقة على الدورة
-                </button>
-              </form>
-              <form method="POST" action="{{ route('courses.reject', $course) }}" class="inline">
-                @csrf
-                <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
-                  <i class="ti ti-x mr-2"></i>
-                  رفض الدورة
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-        @endif
-
-        <!-- Danger Zone -->
-        <div class="mt-8 pt-8 border-t border-red-200">
-          <div class="bg-red-50 border border-red-200 rounded-2xl p-6">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <i class="ti ti-alert-triangle text-red-400 text-xl"></i>
-              </div>
-              <div class="mr-4">
-                <h3 class="text-lg font-medium text-red-800">منطقة الخطر</h3>
-                <p class="text-sm text-red-600 mt-1">حذف هذه الدورة نهائياً. لا يمكن التراجع عن هذا الإجراء.</p>
-              </div>
-            </div>
-            <div class="mt-4">
-              <form method="POST" action="{{ route('courses.destroy', $course) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذه الدورة؟ لا يمكن التراجع عن هذا الإجراء.')" class="inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-xl font-semibold text-sm text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
-                  <i class="ti ti-trash mr-2"></i>
-                  حذف الدورة
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -388,8 +343,8 @@
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
 }
 
 .animate-fade-in {
@@ -407,58 +362,5 @@
 .animate-shake {
   animation: shake 0.5s ease-in-out;
 }
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, #3b82f6, #8b5cf6);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to right, #2563eb, #7c3aed);
-}
 </style>
-
-<script>
-  window.addEventListener('DOMContentLoaded', function () {
-    // Auto-hide notifications after 5 seconds
-    setTimeout(function() {
-      const notifications = document.querySelectorAll('[class*="bg-green-50"], [class*="bg-red-50"]');
-      notifications.forEach(notification => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateY(-20px)';
-        setTimeout(() => notification.remove(), 300);
-      });
-    }, 5000);
-
-    // Form validation
-    const form = document.querySelector('form');
-    const submitButton = form.querySelector('button[type="submit"]');
-    
-    form.addEventListener('submit', function(e) {
-      submitButton.disabled = true;
-      submitButton.innerHTML = '<i class="ti ti-loader-2 mr-2 animate-spin"></i>جاري الحفظ...';
-    });
-  });
-
-  function previewCourseImage(event) {
-    const container = document.getElementById('course-image-preview');
-    container.innerHTML = '';
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-    const img = document.createElement('img');
-    img.className = 'w-64 h-40 object-cover rounded-2xl border border-gray-200 shadow-sm';
-    img.src = URL.createObjectURL(file);
-    container.appendChild(img);
-  }
-</script>
 @endsection

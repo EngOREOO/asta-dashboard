@@ -14,7 +14,7 @@
             <p class="text-gray-600" style="font-size: 1.1rem;">تعديل شهادة {{ $testimonial->user_name }}</p>
           </div>
         </div>
-        <a href="{{ route('testimonials.index') }}" 
+        <a href="{{ route('admin.testimonials.index') }}" 
            class="bg-white/70 backdrop-blur-xl shadow-lg rounded-2xl px-6 py-3 text-gray-700 font-semibold hover:shadow-xl transition-all duration-300 border border-white/20">
           <i class="ti ti-arrow-right mr-2"></i>العودة للقائمة
         </a>
@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <form action="{{ route('testimonials.update', $testimonial) }}" method="POST" enctype="multipart/form-data" class="p-8">
+      <form action="{{ route('admin.testimonials.update', $testimonial) }}" method="POST" enctype="multipart/form-data" class="p-8">
         @csrf
         @method('PUT')
 
@@ -173,7 +173,7 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center justify-end space-x-4 rtl:space-x-reverse">
-          <a href="{{ route('testimonials.index') }}" 
+          <a href="{{ route('admin.testimonials.index') }}" 
              class="bg-gray-100 text-gray-700 px-8 py-4 rounded-2xl font-semibold hover:bg-gray-200 transition-all duration-300">
             <i class="ti ti-x mr-2"></i>إلغاء
           </a>

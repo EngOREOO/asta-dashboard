@@ -50,6 +50,60 @@
               </div>
 
               <div>
+                <InputLabel for="instructor_id" value="Instructor" />
+                <select
+                  id="instructor_id"
+                  v-model="form.instructor_id"
+                  class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                  required
+                >
+                  <option value="">Select Instructor</option>
+                  <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">
+                    {{ instructor.name }}
+                  </option>
+                </select>
+                <InputError :message="form.errors.instructor_id" class="mt-2" />
+              </div>
+
+              <div>
+                <InputLabel for="duration_days" value="Course Duration (Days)" />
+                <TextInput
+                  id="duration_days"
+                  v-model="form.duration_days"
+                  type="number"
+                  min="1"
+                  class="mt-1 block w-full"
+                />
+                <InputError :message="form.errors.duration_days" class="mt-2" />
+              </div>
+
+              <div>
+                <InputLabel for="awarding_institution" value="Awarding Institution" />
+                <TextInput
+                  id="awarding_institution"
+                  v-model="form.awarding_institution"
+                  type="text"
+                  placeholder="e.g., King Saud University"
+                  class="mt-1 block w-full"
+                />
+                <InputError :message="form.errors.awarding_institution" class="mt-2" />
+              </div>
+
+              <div>
+                <InputLabel for="status" value="Status" />
+                <select
+                  id="status"
+                  v-model="form.status"
+                  class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="pending">Pending Approval</option>
+                  <option v-if="isAdmin" value="approved">Approved</option>
+                </select>
+                <InputError :message="form.errors.status" class="mt-2" />
+              </div>
+
+              <div>
                 <InputLabel for="thumbnail" value="Thumbnail" />
                 <input
                   type="file"
@@ -92,10 +146,22 @@ import TextArea from '@/Components/TextArea.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
+const props = defineProps({
+  instructors: Array,
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const form = useForm({
   title: '',
   description: '',
   price: '',
+  instructor_id: '',
+  duration_days: '',
+  awarding_institution: '',
+  status: props.isAdmin ? 'approved' : 'pending',
   thumbnail: null,
 });
 

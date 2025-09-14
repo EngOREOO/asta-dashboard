@@ -10,7 +10,20 @@ use Illuminate\Support\Facades\Log;
 class TestimonialController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of approved testimonials for public viewing.
+     */
+    public function publicIndex()
+    {
+        $testimonials = Testimonial::where('is_approved', true)
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('testimonials.public', compact('testimonials'));
+    }
+
+    /**
+     * Display a listing of the resource (Admin only).
      */
     public function index()
     {
@@ -60,7 +73,7 @@ class TestimonialController extends Controller
 
             Log::info('Testimonial created successfully', ['testimonial_id' => $testimonial->id]);
 
-            return redirect()->route('testimonials.index')
+            return redirect()->route('admin.testimonials.index')
                 ->with('success', 'تم إنشاء الشهادة بنجاح');
 
         } catch (\Exception $e) {
@@ -121,7 +134,7 @@ class TestimonialController extends Controller
 
             Log::info('Testimonial updated successfully', ['testimonial_id' => $testimonial->id]);
 
-            return redirect()->route('testimonials.index')
+            return redirect()->route('admin.testimonials.index')
                 ->with('success', 'تم تحديث الشهادة بنجاح');
 
         } catch (\Exception $e) {
@@ -146,7 +159,7 @@ class TestimonialController extends Controller
 
             Log::info('Testimonial deleted successfully', ['testimonial_id' => $testimonial->id]);
 
-            return redirect()->route('testimonials.index')
+            return redirect()->route('admin.testimonials.index')
                 ->with('success', 'تم حذف الشهادة بنجاح');
 
         } catch (\Exception $e) {

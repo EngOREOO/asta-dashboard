@@ -57,6 +57,17 @@
           </div>
 
           <div>
+            <label for="category_id" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الاقسام</label>
+            <select id="category_id" name="category_id" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+              <option value="">اختر القسم</option>
+              @foreach(($categories ?? collect()) as $category)
+                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+              @endforeach
+            </select>
+            @error('category_id')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
+
+          <div>
             <label for="duration_months" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المدة (أشهر)</label>
             <input id="duration_months" name="duration_months" type="number" value="{{ old('duration_months') }}" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="1">
             <small class="text-gray-500">المدة المتوقعة لإكمال البرنامج</small>

@@ -72,6 +72,24 @@ unset($__errorArgs, $__bag); ?>
           </div>
 
           <div>
+            <label for="category_id" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">الاقسام</label>
+            <select id="category_id" name="category_id" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+              <option value="">اختر القسم</option>
+              <?php $__currentLoopData = ($categories ?? collect()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($category->id); ?>" <?php echo e(old('category_id', $degree->category_id) == $category->id ? 'selected' : ''); ?>><?php echo e($category->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+            <?php $__errorArgs = ['category_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><p class="text-red-600 mt-1" style="font-size: 1.3rem;"><?php echo e($message); ?></p><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+          </div>
+
+          <div>
             <label for="duration_months" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">المدة (أشهر)</label>
             <input id="duration_months" name="duration_months" type="number" value="<?php echo e(old('duration_months', $degree->duration_months)); ?>" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;" min="1">
             <small class="text-gray-500">المدة المتوقعة لإكمال البرنامج</small>
