@@ -96,8 +96,10 @@
                             @if($courseMaterial->type === 'video' && $courseMaterial->file_path)
                                 <div class="p-4 border border-gray-200 rounded-2xl bg-black/5">
                                     <video controls class="w-full rounded-xl shadow" style="max-height: 520px;">
-                                        <source src="{{ asset('storage/' . $courseMaterial->file_path) }}" type="video/mp4">
-                                        متصفحك لا يدعم تشغيل الفيديو. <a href="{{ asset('storage/' . $courseMaterial->file_path) }}" class="text-blue-600 underline">تحميل الملف</a>
+                                        @php($publicPath = public_path($courseMaterial->file_path))
+                                        @php($src = file_exists($publicPath) ? asset($courseMaterial->file_path) : asset('storage/' . $courseMaterial->file_path))
+                                        <source src="{{ $src }}" type="video/mp4">
+                                        متصفحك لا يدعم تشغيل الفيديو. <a href="{{ $src }}" class="text-blue-600 underline">تحميل الملف</a>
                                     </video>
                                 </div>
                             @endif
@@ -114,7 +116,8 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <x-admin.button variant="primary" size="sm" href="{{ asset('storage/' . $courseMaterial->file_path) }}" target="_blank">
+                                    @php($docSrc = file_exists(public_path($courseMaterial->file_path)) ? asset($courseMaterial->file_path) : asset('storage/' . $courseMaterial->file_path))
+                                    <x-admin.button variant="primary" size="sm" href="{{ $docSrc }}" target="_blank">
                                         <i class="ti ti-download mr-1"></i>
                                         تحميل الملف
                                     </x-admin.button>

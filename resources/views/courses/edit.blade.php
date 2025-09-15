@@ -90,7 +90,17 @@
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
       </div>
       
-      <div class="p-8">
+      <div class="p-8" x-data="{step:1, max:3, lessons:[{title:'',type:'video',video:null}], materials:[{file:null}], next(){ if(this.step < this.max) this.step++; }, prev(){ if(this.step>1) this.step--; }}">
+        <!-- Stepper -->
+        <div class="flex items-center justify-between mb-8">
+          <template x-for="s in max" :key="s">
+            <div class="flex-1 flex items-center">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold" :class="step>=s ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow' : 'bg-gray-200 text-gray-500'" x-text="s"></div>
+              <div class="flex-1 h-1 mx-2 rounded" :class="s<max ? (step> s ? 'bg-gradient-to-r from-teal-500 to-blue-600' : 'bg-gray-200') : ''"></div>
+            </div>
+          </template>
+        </div>
+
         <form method="POST" action="{{ route('courses.update', $course) }}" enctype="multipart/form-data" class="space-y-8">
           @csrf
           @method('PUT')
@@ -114,8 +124,8 @@
             </div>
           @endif
 
-          <!-- Basic Information -->
-          <div class="space-y-6">
+          <!-- Step 1: Basic Information -->
+          <div class="space-y-6" x-show="step===1">
             <h3 class="text-xl font-semibold text-gray-900 flex items-center">
               <i class="ti ti-info-circle mr-2 text-blue-500"></i>
               المعلومات الأساسية
@@ -163,6 +173,18 @@
                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('code') border-red-300 @enderror"
                        required>
                 @error('code')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
+                <label for="estimated_duration" class="block text-sm font-medium text-gray-700 mb-2">المدة المقدرة (ساعات)</label>
+                <input type="number" 
+                       id="estimated_duration" 
+                       name="estimated_duration" 
+                       value="{{ old('estimated_duration', $course->estimated_duration) }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('estimated_duration') border-red-300 @enderror">
+                @error('estimated_duration')
                   <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
@@ -222,6 +244,21 @@
                 @enderror
               </div>
 
+              <div>
+                <label for="specialization" class="block text-sm font-medium text-gray-700 mb-2">التخصص</label>
+                <select id="specialization" name="specialization" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('specialization') border-red-300 @enderror">
+                  <option value="">اختر التخصص</option>
+                  @isset($specializations)
+                    @foreach($specializations as $spec)
+                      <option value="{{ $spec->name }}" @selected(old('specialization', $course->specialization) === $spec->name)>{{ $spec->name }}</option>
+                    @endforeach
+                  @endisset
+                </select>
+                @error('specialization')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
               @if($isAdmin)
               <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-2">الحالة</label>
@@ -251,8 +288,8 @@
             </div>
           </div>
 
-          <!-- Course Image -->
-          <div class="space-y-6">
+          <!-- Image Upload (Step 1) -->
+          <div class="space-y-6" x-show="step===1">
             <h3 class="text-xl font-semibold text-gray-900 flex items-center">
               <i class="ti ti-photo mr-2 text-green-500"></i>
               صورة الدورة
@@ -275,7 +312,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">الصورة الحالية</label>
                 <div class="relative">
-                  <img src="{{ asset('storage/' . $course->thumbnail) }}" 
+                  <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->exists($course->thumbnail) ? \Illuminate\Support\Facades\Storage::disk('public')->url($course->thumbnail) : asset($course->thumbnail) }}" 
                        alt="صورة الدورة" 
                        class="w-full h-48 object-cover rounded-xl border border-gray-200">
                 </div>
@@ -284,7 +321,60 @@
             </div>
           </div>
 
-          <!-- Learning Paths -->
+          <!-- Step 2: Lessons -->
+          <div class="space-y-6" x-show="step===2">
+            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+              <i class="ti ti-list-details mr-2 text-pink-500"></i>
+              دروس الدورة
+            </h3>
+            <template x-for="(lesson,idx) in lessons" :key="idx">
+              <div class="border border-gray-200 rounded-2xl p-4 bg-white/70 space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">عنوان الدرس</label>
+                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" x-model="lesson.title" name="lessons[title][]">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">النوع</label>
+                    <select class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" x-model="lesson.type" name="lessons[type][]">
+                      <option value="video">درس فيديو</option>
+                      <option value="quiz">اختبار</option>
+                    </select>
+                  </div>
+                  <div class="flex items-end justify-end">
+                    <button type="button" class="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200" @click="lessons.splice(idx,1)" x-show="lessons.length>1">حذف</button>
+                  </div>
+                </div>
+                <div x-show="lesson.type==='video'">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">رفع فيديو</label>
+                  <input type="file" accept="video/*" class="w-full px-4 py-2 border border-gray-300 rounded-xl" name="lessons[video][]">
+                </div>
+              </div>
+            </template>
+            <button type="button" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow hover:shadow-lg" @click="lessons.push({title:'',type:'video',video:null})"><i class="ti ti-plus mr-2"></i>إضافة درس</button>
+          </div>
+
+          <!-- Step 3: Materials -->
+          <div class="space-y-6" x-show="step===3">
+            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+              <i class="ti ti-folder mr-2 text-amber-500"></i>
+              مواد إضافية
+            </h3>
+            <template x-for="(m, i) in materials" :key="i">
+              <div class="border border-gray-200 rounded-2xl p-4 bg-white/70 space-y-2">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">ملف (PDF, DOCX)</label>
+                  <input type="file" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx" class="w-full px-4 py-2 border border-gray-300 rounded-xl" name="materials[file][]">
+                </div>
+                <div class="flex justify-end">
+                  <button type="button" class="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200" @click="materials.splice(i,1)" x-show="materials.length>1">حذف</button>
+                </div>
+              </div>
+            </template>
+            <button type="button" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow hover:shadow-lg" @click="materials.push({file:null})"><i class="ti ti-plus mr-2"></i>إضافة مادة</button>
+          </div>
+
+          <!-- Learning Paths (remain outside steps to allow quick changes) -->
           @if($learningPaths->count() > 0)
           <div class="space-y-6">
             <h3 class="text-xl font-semibold text-gray-900 flex items-center">
@@ -307,17 +397,16 @@
           </div>
           @endif
 
-          <!-- Submit Button -->
-          <div class="flex justify-end space-x-4 space-x-reverse pt-6 border-t border-gray-200">
-            <a href="{{ route('courses.show', $course) }}" 
-               class="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors duration-200">
-              إلغاء
-            </a>
-            <button type="submit" 
-                    class="px-8 py-3 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-xl hover:from-teal-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl">
-              <i class="ti ti-device-floppy mr-2"></i>
-              حفظ التغييرات
-            </button>
+          <!-- Wizard Navigation -->
+          <div class="flex items-center justify-between pt-8 border-t border-gray-200">
+            <div>
+              <a href="{{ route('courses.show', $course) }}" class="inline-flex items-center px-6 py-3 border border-gray-300 rounded-xl font-semibold text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-lg hover:shadow-xl">إلغاء</a>
+            </div>
+            <div class="flex items-center gap-3">
+              <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-800 rounded-xl shadow hover:bg-gray-200" @click="prev()" x-show="step>1">السابق</button>
+              <button type="button" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl shadow hover:shadow-xl" @click="next()" x-show="step<max">التالي</button>
+              <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow hover:shadow-xl" x-show="step===max"><i class="ti ti-check mr-2"></i>حفظ التغييرات</button>
+            </div>
           </div>
         </form>
       </div>

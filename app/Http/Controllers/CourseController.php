@@ -200,7 +200,14 @@ class CourseController extends Controller
                 $filePath = null;
 
                 if ($type === 'video' && isset($videos[$i]) && $videos[$i]) {
-                    $filePath = Storage::disk('public')->putFile('course-materials/videos', $videos[$i]);
+                    // Ensure public/videos/courses exists and move file there
+                    $targetDir = public_path('videos/courses');
+                    if (! is_dir($targetDir)) {
+                        @mkdir($targetDir, 0755, true);
+                    }
+                    $filename = time().'_'.$videos[$i]->getClientOriginalName();
+                    $videos[$i]->move($targetDir, $filename);
+                    $filePath = 'videos/courses/'.$filename;
                 }
 
                 CourseMaterial::create([
@@ -218,7 +225,14 @@ class CourseController extends Controller
         if ($request->hasFile('materials.file')) {
             foreach ($request->file('materials.file', []) as $file) {
                 if (! $file) { continue; }
-                $stored = Storage::disk('public')->putFile('course-materials/docs', $file);
+                // Ensure public/docs/courses exists and move file there
+                $docsDir = public_path('docs/courses');
+                if (! is_dir($docsDir)) {
+                    @mkdir($docsDir, 0755, true);
+                }
+                $docName = time().'_'.$file->getClientOriginalName();
+                $file->move($docsDir, $docName);
+                $stored = 'docs/courses/'.$docName;
                 CourseMaterial::create([
                     'course_id' => $course->id,
                     'title' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
@@ -249,12 +263,14 @@ class CourseController extends Controller
 
         $learningPaths = \App\Models\LearningPath::orderBy('name')->get(['id', 'name']);
         $instructors = \App\Models\User::role('instructor')->orderBy('name')->get(['id','name']);
+        $specializations = \App\Models\Specialization::orderBy('name')->get(['id','name']);
         $isAdmin = auth()->user()->hasRole('admin');
 
         return view('courses.edit', [
             'course' => $course->load(['materials', 'instructor', 'category', 'learningPaths']),
             'learningPaths' => $learningPaths,
             'instructors' => $instructors,
+            'specializations' => $specializations,
             'isAdmin' => $isAdmin,
         ]);
     }
@@ -279,6 +295,20 @@ class CourseController extends Controller
             'image' => 'nullable|image|max:2048',
             'learning_path_ids' => 'sometimes|array',
             'learning_path_ids.*' => 'integer|exists:learning_paths,id',
+
+            // Wizard Step 2: Lessons (allow adding new in edit)
+            'lessons' => 'sometimes|array',
+            'lessons.title' => 'sometimes|array',
+            'lessons.type' => 'sometimes|array',
+            'lessons.video' => 'sometimes|array',
+            'lessons.title.*' => 'nullable|string|max:255',
+            'lessons.type.*' => 'nullable|in:video,quiz',
+            'lessons.video.*' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/x-matroska|max:512000',
+
+            // Wizard Step 3: Materials (documents)
+            'materials' => 'sometimes|array',
+            'materials.file' => 'sometimes|array',
+            'materials.file.*' => 'nullable|file|mimes:pdf,doc,docx,txt,ppt,pptx,xls,xlsx|max:102400',
         ]);
 
         if ($request->hasFile('image')) {
@@ -304,6 +334,62 @@ class CourseController extends Controller
             $ids = $validated['learning_path_ids'] ?? [];
             $sync = collect($ids)->mapWithKeys(fn ($id, $index) => [$id => ['order' => $index + 1]])->toArray();
             $course->learningPaths()->sync($sync);
+        }
+
+        // Append newly uploaded Lessons as CourseMaterial
+        $orderCounter = (int) (($course->materials()->max('order')) ?? 0) + 1;
+        if ($request->has('lessons')) {
+            $titles = $request->input('lessons.title', []);
+            $types = $request->input('lessons.type', []);
+            $videos = $request->file('lessons.video', []);
+
+            $max = max(count($titles), count($types), count($videos));
+            for ($i = 0; $i < $max; $i++) {
+                $title = $titles[$i] ?? null;
+                $type = $types[$i] ?? 'video';
+                $filePath = null;
+
+                if ($type === 'video' && isset($videos[$i]) && $videos[$i]) {
+                    $targetDir = public_path('videos/courses');
+                    if (! is_dir($targetDir)) {
+                        @mkdir($targetDir, 0755, true);
+                    }
+                    $filename = time().'_'.$videos[$i]->getClientOriginalName();
+                    $videos[$i]->move($targetDir, $filename);
+                    $filePath = 'videos/courses/'.$filename;
+                }
+
+                \App\Models\CourseMaterial::create([
+                    'course_id' => $course->id,
+                    'title' => $title ?: ($type === 'video' ? 'درس فيديو' : 'اختبار'),
+                    'type' => $type === 'quiz' ? 'quiz' : 'video',
+                    'file_path' => $filePath,
+                    'order' => $orderCounter++,
+                    'is_active' => true,
+                ]);
+            }
+        }
+
+        // Append newly uploaded Materials (documents)
+        if ($request->hasFile('materials.file')) {
+            foreach ($request->file('materials.file', []) as $file) {
+                if (! $file) { continue; }
+                $docsDir = public_path('docs/courses');
+                if (! is_dir($docsDir)) {
+                    @mkdir($docsDir, 0755, true);
+                }
+                $docName = time().'_'.$file->getClientOriginalName();
+                $file->move($docsDir, $docName);
+                $stored = 'docs/courses/'.$docName;
+                \App\Models\CourseMaterial::create([
+                    'course_id' => $course->id,
+                    'title' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                    'type' => 'document',
+                    'file_path' => $stored,
+                    'order' => $orderCounter++,
+                    'is_active' => true,
+                ]);
+            }
         }
 
         if ($request->has('submit_for_approval')) {
