@@ -31,9 +31,14 @@ class User extends Authenticatable
         'teaching_field',
         'job_title',
         'phone',
+        'phones',
+        'social_links',
         'district',
         'street',
         'city',
+        'department',
+        'specialization',
+        'is_active',
     ];
 
     /**
@@ -70,6 +75,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'phones' => 'array',
+            'social_links' => 'array',
+            'is_active' => 'boolean',
         ];
     }
 

@@ -164,6 +164,14 @@
                             </div>
                             <span>الأقسام</span>
                         </a>
+                        <a href="<?php echo e(route('specializations.index')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('specializations.*') ? 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'specializations'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('specializations.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-list-details text-lg"></i>
+                            </div>
+                            <span>التخصصات</span>
+                        </a>
                         <?php endif; ?>
                         <?php if(Route::has('course-levels.index') && auth()->user()->can('course-levels.read')): ?>
                         <a href="<?php echo e(route('course-levels.index')); ?>" 
@@ -546,14 +554,6 @@
                             </div>
                             <span>الشركاء</span>
                         </a>
-                        <a href="<?php echo e(route('admin.testimonials.index')); ?>" 
-                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('testimonials.*') ? 'text-white bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:shadow-md'); ?>"
-                           @click="activeSection = 'testimonials'">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('testimonials.*') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
-                                <i class="ti ti-quote text-lg"></i>
-                            </div>
-                            <span>الشهادات</span>
-                        </a>
                         <a href="<?php echo e(route('system-settings.info')); ?>" 
                            class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('system-settings.*') ? 'text-white bg-gradient-to-r from-gray-500 to-slate-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-gray-500 hover:to-slate-600 hover:shadow-md'); ?>"
                            @click="activeSection = 'system-settings'">
@@ -565,6 +565,152 @@
                     </div>
                 </div>
                 <?php endif; ?>
+
+                <!-- التقارير / Reports -->
+                <?php if(auth()->user()->can('system-settings.read')): ?>
+                <div class="mb-8" x-data="{open:true}">
+                    <div class="relative mb-4 px-2">
+                        <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full"></div>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>التقارير</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2" x-show="open" x-transition>
+                        <a href="<?php echo e(route('admin.reports.sales')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.sales') ? 'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'sales'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.sales') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-chart-line text-lg"></i>
+                            </div>
+                            <span>المبيعات</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.enrollments')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.enrollments') ? 'text-white bg-gradient-to-r from-blue-500 to-cyan-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-cyan-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'enrollments'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.enrollments') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-users text-lg"></i>
+                            </div>
+                            <span>التسجيلات</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.payments')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.payments') ? 'text-white bg-gradient-to-r from-yellow-500 to-orange-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'payments'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.payments') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-credit-card text-lg"></i>
+                            </div>
+                            <span>المدفوعات</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.attendance')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.attendance') ? 'text-white bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'attendance'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.attendance') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-calendar-check text-lg"></i>
+                            </div>
+                            <span>الحضور</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.course-wise-enrollments')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.course-wise-enrollments') ? 'text-white bg-gradient-to-r from-teal-500 to-blue-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-blue-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'course-wise-enrollments'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.course-wise-enrollments') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-book text-lg"></i>
+                            </div>
+                            <span>تسجيلات الدورات</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.promo-code-statistics')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.promo-code-statistics') ? 'text-white bg-gradient-to-r from-red-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'promo-code-statistics'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.promo-code-statistics') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-discount text-lg"></i>
+                            </div>
+                            <span>إحصائيات الكوبونات</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.bandwidth-consumption')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.bandwidth-consumption') ? 'text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'bandwidth-consumption'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.bandwidth-consumption') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-network text-lg"></i>
+                            </div>
+                            <span>استهلاك النطاق</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.storage-consumption')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.storage-consumption') ? 'text-white bg-gradient-to-r from-gray-500 to-slate-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-gray-500 hover:to-slate-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'storage-consumption'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.storage-consumption') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-server text-lg"></i>
+                            </div>
+                            <span>استهلاك التخزين</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.reports.scheduled-tasks')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.reports.scheduled-tasks') ? 'text-white bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-500 hover:to-green-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'scheduled-tasks'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.reports.scheduled-tasks') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-clock text-lg"></i>
+                            </div>
+                            <span>المهام المجدولة</span>
+                        </a>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- الماركتينج / Marketing -->
+                <?php if(auth()->user()->can('system-settings.read')): ?>
+                <div class="mb-8" x-data="{open:false}">
+                    <div class="relative mb-4 px-2">
+                        <div class="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full"></div>
+                        <button class="relative w-full text-right text-2xl font-bold text-gray-700 uppercase tracking-wider pr-4 flex items-center justify-between" @click="open=!open">
+                            <span>الماركتينج</span>
+                            <i class="ti ti-chevron-down text-base transition-transform" :class="{'rotate-180': open}"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2" x-show="open" x-transition>
+                        <a href="<?php echo e(route('admin.marketing.index')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.marketing.index') ? 'text-white bg-gradient-to-r from-purple-500 to-pink-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'marketing-dashboard'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.marketing.index') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-dashboard text-lg"></i>
+                            </div>
+                            <span>لوحة الماركتينج</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.marketing.create')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.marketing.create') ? 'text-white bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'marketing-create'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.marketing.create') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-plus text-lg"></i>
+                            </div>
+                            <span>إنشاء حملة جديدة</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.marketing.templates')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.marketing.templates') ? 'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-emerald-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'marketing-templates'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.marketing.templates') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-template text-lg"></i>
+                            </div>
+                            <span>قوالب الرسائل</span>
+                        </a>
+                        
+                        <a href="<?php echo e(route('admin.marketing.analytics')); ?>" 
+                           class="group flex items-center space-x-4 rtl:space-x-reverse px-4 py-3 text-xl font-medium rounded-xl transition-all duration-300 cursor-pointer <?php echo e(request()->routeIs('admin.marketing.analytics') ? 'text-white bg-gradient-to-r from-orange-500 to-red-600 shadow-lg' : 'text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 hover:shadow-md'); ?>"
+                           @click="activeSection = 'marketing-analytics'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e(request()->routeIs('admin.marketing.analytics') ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white/20'); ?> transition-all duration-300">
+                                <i class="ti ti-chart-bar text-lg"></i>
+                            </div>
+                            <span>تحليلات الحملات</span>
+                        </a>
+                    </div>
+                </div>
+                <?php endif; ?>
+
             </nav>
 
             <!-- Profile Block - Pinned to Bottom -->
@@ -657,6 +803,27 @@
             background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
             border-radius: 2px;
         }
+
+        /* Ensure code/LTR content uses Arial to show English numerals */
+        code, pre, kbd, samp,
+        .text-ltr, .email-content,
+        [dir="ltr"],
+        .en-num,
+        input[type="email"], input[type="url"], input[type="number"], textarea.text-ltr {
+            font-family: Arial, sans-serif !important;
+        }
+        /* Utility to force LTR direction when needed */
+        .text-ltr { direction: ltr; unicode-bidi: bidi-override; }
+
+        /* Code fields: force Arial and LTR to keep English numerals */
+        .code-text, .code-badge, .font-mono,
+        [data-code="true"],
+        input#code, input[name="code"],
+        .code-input {
+            font-family: Arial, sans-serif !important;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
     </style>
 
     <!-- Alpine.js -->
@@ -670,8 +837,8 @@
             const nav = document.querySelector('aside nav');
             const active = nav.querySelector('.text-white.bg-gradient-to-r');
             if(active){
-              // Place active item comfortably within view (roughly upper-middle)
-              const targetTop = active.offsetTop - (nav.clientHeight * 0.35);
+              // Place active item at the top of the view
+              const targetTop = active.offsetTop - 20; // 20px padding from top
               nav.scrollTop = Math.max(0, targetTop);
             }
           }

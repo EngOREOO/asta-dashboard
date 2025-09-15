@@ -34,6 +34,13 @@ class UsersController extends Controller
         ]);
     }
 
+    public function toggleActive(User $user)
+    {
+        $user->is_active = ! (bool) $user->is_active;
+        $user->save();
+        return redirect()->back()->with('success', 'تم تحديث حالة المستخدم');
+    }
+
     public function show(User $user)
     {
         // Load roles and courses taught/enrolled depending on your relationships
@@ -52,11 +59,13 @@ class UsersController extends Controller
     public function create()
     {
         $roles = [];
+        $categories = \App\Models\Category::orderBy('name')->get(['id','name']);
+        $specializations = \App\Models\Specialization::orderBy('name')->get(['id','name']);
         if (class_exists(\Spatie\Permission\Models\Role::class)) {
             $roles = \Spatie\Permission\Models\Role::query()->pluck('name', 'id');
         }
 
-        return view('users.create', compact('roles'));
+        return view('users.create', compact('roles','categories','specializations'));
     }
 
     public function store(Request $request)
@@ -66,12 +75,23 @@ class UsersController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role_id' => ['nullable', 'integer'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'specialization' => ['nullable', 'string', 'max:255'],
+            'phones' => ['nullable', 'array'],
+            'phones.*' => ['nullable', 'string', 'max:50'],
+            'social_links' => ['nullable', 'array'],
+            'social_links.*.platform' => ['nullable', 'string', 'max:50'],
+            'social_links.*.url' => ['nullable', 'url', 'max:255'],
         ]);
 
         $user = new User;
         $user->name = $data['name'];
         $user->email = $data['email'];
         $user->password = bcrypt($data['password']);
+        $user->department = $data['department'] ?? null;
+        $user->specialization = $data['specialization'] ?? null;
+        $user->phones = $data['phones'] ?? null;
+        $user->social_links = $data['social_links'] ?? null;
         $user->save();
 
         if (! empty($data['role_id']) && class_exists(\Spatie\Permission\Models\Role::class) && method_exists($user, 'syncRoles')) {
@@ -88,11 +108,13 @@ class UsersController extends Controller
     {
         $roles = [];
         $user->load('roles');
+        $categories = \App\Models\Category::orderBy('name')->get(['id','name']);
+        $specializations = \App\Models\Specialization::orderBy('name')->get(['id','name']);
         if (class_exists(\Spatie\Permission\Models\Role::class)) {
             $roles = \Spatie\Permission\Models\Role::query()->pluck('name', 'id');
         }
 
-        return view('users.edit', compact('user', 'roles'));
+        return view('users.edit', compact('user', 'roles','categories','specializations'));
     }
 
     public function update(Request $request, User $user)
@@ -102,6 +124,13 @@ class UsersController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'role_id' => ['nullable', 'integer'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'specialization' => ['nullable', 'string', 'max:255'],
+            'phones' => ['nullable', 'array'],
+            'phones.*' => ['nullable', 'string', 'max:50'],
+            'social_links' => ['nullable', 'array'],
+            'social_links.*.platform' => ['nullable', 'string', 'max:50'],
+            'social_links.*.url' => ['nullable', 'url', 'max:255'],
         ]);
 
         $user->name = $data['name'];
@@ -109,6 +138,10 @@ class UsersController extends Controller
         if (! empty($data['password'])) {
             $user->password = bcrypt($data['password']);
         }
+        $user->department = $data['department'] ?? null;
+        $user->specialization = $data['specialization'] ?? null;
+        $user->phones = $data['phones'] ?? null;
+        $user->social_links = $data['social_links'] ?? null;
         $user->save();
 
         if (array_key_exists('role_id', $data) && class_exists(\Spatie\Permission\Models\Role::class) && method_exists($user, 'syncRoles')) {

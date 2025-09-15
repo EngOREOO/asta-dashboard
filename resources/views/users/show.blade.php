@@ -89,6 +89,80 @@
               <span class="text-gray-700 font-medium">عدد الدورات</span>
               <span class="font-bold text-gray-800">{{ method_exists($user,'instructorCourses') ? $user->instructorCourses->count() : ($user->courses->count() ?? 0) }}</span>
             </div>
+
+            @php($isInstructor = $user->hasRole('instructor'))
+            @if($isInstructor)
+            <div class="p-4 bg-white/50 rounded-xl border border-gray-100">
+              <div class="flex items-center gap-2 mb-3 text-gray-800">
+                <i class="ti ti-chalkboard"></i>
+                <span class="font-medium">بيانات المحاضر</span>
+              </div>
+              <div class="space-y-3 text-sm">
+                @if(!empty($user->department))
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-gray-600">
+                    <i class="ti ti-building"></i>
+                    <span>القسم</span>
+                  </div>
+                  <span class="font-medium text-gray-900">{{ $user->department }}</span>
+                </div>
+                @endif
+
+                @if(!empty($user->specialization))
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-gray-600">
+                    <i class="ti ti-certificate"></i>
+                    <span>التخصص</span>
+                  </div>
+                  <span class="font-medium text-gray-900">{{ $user->specialization }}</span>
+                </div>
+                @endif
+
+                @php($phonesList = is_array($user->phones ?? null) ? array_values(array_filter($user->phones)) : [])
+                @if(count($phonesList))
+                <div>
+                  <div class="flex items-center gap-2 text-gray-600 mb-1">
+                    <i class="ti ti-phone"></i>
+                    <span>أرقام الهاتف</span>
+                  </div>
+                  <ul class="space-y-1">
+                    @foreach($phonesList as $ph)
+                      <li>
+                        <a href="tel:{{ preg_replace('/\s+/', '', $ph) }}" class="text-gray-800 hover:text-blue-600 transition" dir="ltr">
+                          {{ $ph }}
+                        </a>
+                      </li>
+                    @endforeach
+                  </ul>
+                </div>
+                @endif
+
+                @php($socialsList = is_array($user->social_links ?? null) ? $user->social_links : [])
+                @if(count($socialsList))
+                <div>
+                  <div class="flex items-center gap-2 text-gray-600 mb-1">
+                    <i class="ti ti-world"></i>
+                    <span>روابط السوشيال</span>
+                  </div>
+                  <ul class="space-y-1">
+                    @foreach($socialsList as $link)
+                      @php($platform = $link['platform'] ?? '')
+                      @php($url = $link['url'] ?? '')
+                      @if(!empty($url))
+                      <li>
+                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline break-all" dir="ltr">
+                          {{ $platform ?: $url }}
+                          <i class="ti ti-external-link ml-1"></i>
+                        </a>
+                      </li>
+                      @endif
+                    @endforeach
+                  </ul>
+                </div>
+                @endif
+              </div>
+            </div>
+            @endif
           </div>
         </div>
       </div>

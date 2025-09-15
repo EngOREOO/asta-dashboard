@@ -399,6 +399,38 @@ endif;
 unset($__errorArgs, $__bag); ?>
               </div>
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <label for="specialization" class="block text-sm font-medium text-gray-700 mb-2">التخصص</label>
+                <select id="specialization" name="specialization" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm <?php $__errorArgs = ['specialization'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                  <option value="">اختر التخصص</option>
+                  <?php if(isset($specializations)): ?>
+                    <?php $__currentLoopData = $specializations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $spec): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <option value="<?php echo e($spec->name); ?>" <?php if(old('specialization') === $spec->name): echo 'selected'; endif; ?>><?php echo e($spec->name); ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                  <?php endif; ?>
+                </select>
+                <?php $__errorArgs = ['specialization'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                  <p class="mt-1 text-sm text-red-600"><?php echo e($message); ?></p>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+              </div>
+              <div></div>
+            </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>

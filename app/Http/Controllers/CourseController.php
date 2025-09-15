@@ -111,8 +111,9 @@ class CourseController extends Controller
     {
         $careerLevels = \App\Models\Degree::orderBy('name')->get(['id','name']);
         $instructors = \App\Models\User::role('instructor')->orderBy('name')->get(['id','name']);
+        $specializations = \App\Models\Specialization::orderBy('name')->get(['id','name']);
         $isAdmin = auth()->user()->hasRole('admin');
-        return view('courses.create', compact('careerLevels', 'instructors', 'isAdmin'));
+        return view('courses.create', compact('careerLevels', 'instructors', 'specializations', 'isAdmin'));
     }
 
     public function store(Request $request)
@@ -126,6 +127,7 @@ class CourseController extends Controller
             'duration_days' => 'nullable|integer|min:1',
             'awarding_institution' => 'nullable|string|max:255',
             'difficulty_level' => 'nullable|string|in:beginner,intermediate,advanced',
+            'specialization' => 'nullable|string|max:255',
             'category_id' => 'nullable|integer|exists:categories,id',
             'instructor_id' => 'required|integer|exists:users,id',
             'image' => 'nullable|image|max:2048',
@@ -270,6 +272,7 @@ class CourseController extends Controller
             'difficulty_level' => 'nullable|string|in:beginner,intermediate,advanced',
             'category_id' => 'nullable|integer|exists:categories,id',
             'instructor_id' => 'required|integer|exists:users,id',
+            'specialization' => 'nullable|string|max:255',
             'duration_days' => 'nullable|integer|min:1',
             'awarding_institution' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:draft,pending,approved,rejected',

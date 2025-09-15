@@ -36,6 +36,7 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckDashboardAccess
 
     // Users CRUD - Full CRUD functionality
     Route::resource('users', UsersController::class);
+    Route::post('users/{user}/toggle-active', [UsersController::class, 'toggleActive'])->name('users.toggle-active');
 
     // Roles & Permissions management
     Route::resource('roles', \App\Http\Controllers\RolesController::class);
@@ -48,6 +49,12 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckDashboardAccess
     Route::get('/instructors', [\App\Http\Controllers\InstructorsController::class, 'index'])->name('instructors.index');
     Route::get('/instructors/{instructor}', [\App\Http\Controllers\InstructorsController::class, 'show'])->name('instructors.show');
     Route::get('/admin/instructors/datatable', [\App\Http\Controllers\InstructorsController::class, 'datatable'])->name('instructors.datatable');
+
+    // Specializations
+    Route::get('/specializations', [\App\Http\Controllers\SpecializationController::class, 'index'])->name('specializations.index');
+    Route::post('/specializations', [\App\Http\Controllers\SpecializationController::class, 'store'])->name('specializations.store');
+    Route::post('/specializations/{specialization}/toggle-active', [\App\Http\Controllers\SpecializationController::class, 'toggleActive'])->name('specializations.toggle-active');
+    Route::delete('/specializations/{specialization}', [\App\Http\Controllers\SpecializationController::class, 'destroy'])->name('specializations.destroy');
 
     // Courses - Full CRUD functionality with approval actions
     Route::resource('courses', CourseController::class);
@@ -247,6 +254,29 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/settings/general', [App\Http\Controllers\AdminController::class, 'settingsGeneral'])->name('settings.general');
     Route::get('/settings/security', [App\Http\Controllers\AdminController::class, 'settingsSecurity'])->name('settings.security');
     Route::get('/settings/notifications', [App\Http\Controllers\AdminController::class, 'settingsNotifications'])->name('settings.notifications');
+    
+    // Reports Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/sales', [App\Http\Controllers\Reports\SalesReportController::class, 'index'])->name('sales');
+        Route::get('/enrollments', [App\Http\Controllers\Reports\EnrollmentReportController::class, 'index'])->name('enrollments');
+        Route::get('/payments', [App\Http\Controllers\Reports\PaymentReportController::class, 'index'])->name('payments');
+        Route::get('/attendance', [App\Http\Controllers\Reports\AttendanceReportController::class, 'index'])->name('attendance');
+        Route::get('/course-wise-enrollments', [App\Http\Controllers\Reports\CourseWiseEnrollmentController::class, 'index'])->name('course-wise-enrollments');
+        Route::get('/promo-code-statistics', [App\Http\Controllers\Reports\PromoCodeStatisticsController::class, 'index'])->name('promo-code-statistics');
+        Route::get('/bandwidth-consumption', [App\Http\Controllers\Reports\BandwidthConsumptionController::class, 'index'])->name('bandwidth-consumption');
+        Route::get('/storage-consumption', [App\Http\Controllers\Reports\StorageConsumptionController::class, 'index'])->name('storage-consumption');
+        Route::get('/scheduled-tasks', [App\Http\Controllers\Reports\ScheduledTasksController::class, 'index'])->name('scheduled-tasks');
+    });
+
+    // Marketing Routes
+    Route::prefix('marketing')->name('marketing.')->group(function () {
+        Route::get('/', [App\Http\Controllers\MarketingController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\MarketingController::class, 'create'])->name('create');
+        Route::post('/send', [App\Http\Controllers\MarketingController::class, 'store'])->name('send');
+        Route::post('/preview', [App\Http\Controllers\MarketingController::class, 'preview'])->name('preview');
+        Route::get('/templates', [App\Http\Controllers\MarketingController::class, 'templates'])->name('templates');
+        Route::get('/analytics', [App\Http\Controllers\MarketingController::class, 'analytics'])->name('analytics');
+    });
     Route::get('/profile', [App\Http\Controllers\AdminController::class, 'profile'])->name('profile');
 });
 

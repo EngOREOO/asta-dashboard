@@ -24,6 +24,7 @@ class Course extends Model
         'duration',
         'level',
         'category',
+        'specialization',
         'status',
         'rejection_reason',
         'average_rating',

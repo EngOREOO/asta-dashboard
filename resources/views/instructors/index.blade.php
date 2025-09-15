@@ -98,6 +98,7 @@
             <th class="px-6 py-4 text-right font-medium text-gray-500 uppercase tracking-wider" style="font-size: 1.3rem;">الدورات</th>
             <th class="px-6 py-4 text-right font-medium text-gray-500 uppercase tracking-wider" style="font-size: 1.3rem;">الطلاب</th>
             <th class="px-6 py-4 text-right font-medium text-gray-500 uppercase tracking-wider" style="font-size: 1.3rem;">تاريخ الانضمام</th>
+            <th class="px-6 py-4 text-right font-medium text-gray-500 uppercase tracking-wider" style="font-size: 1.3rem;">الحالة</th>
             <th class="px-6 py-4 text-right font-medium text-gray-500 uppercase tracking-wider" style="font-size: 1.3rem;">الإجراءات</th>
           </tr>
         </thead>
@@ -141,6 +142,15 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-rtl text-gray-900" style="font-size: 1.3rem;">
                 {{ $instructor->created_at->format('Y-n-j') }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <form action="{{ route('users.toggle-active', $instructor) }}" method="POST">
+                  @csrf
+                  <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm {{ $instructor->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700' }}">
+                    <i class="ti {{ $instructor->is_active ? 'ti-toggle-right' : 'ti-toggle-left' }} ml-1"></i>
+                    {{ $instructor->is_active ? 'نشط' : 'غير نشط' }}
+                  </button>
+                </form>
               </td>
               <td class="px-6 py-4 whitespace-nowrap font-medium text-center" style="font-size: 1.3rem;">
                 <div class="flex items-center space-x-2 space-x-reverse">

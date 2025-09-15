@@ -79,6 +79,65 @@
           </div>
           @endif
 
+          <div>
+            <label for="department" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">القسم</label>
+            <select id="department" name="department" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+              <option value="">اختر القسم</option>
+              @isset($categories)
+                @foreach($categories as $cat)
+                  <option value="{{ $cat->name }}" @selected(old('department')===$cat->name)>{{ $cat->name }}</option>
+                @endforeach
+              @endisset
+            </select>
+            @error('department')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
+
+          <div>
+            <label for="specialization" class="block text-gray-700 mb-2" style="font-size: 1.3rem;">التخصص</label>
+            <select id="specialization" name="specialization" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+              <option value="">اختر التخصص</option>
+              @isset($specializations)
+                @foreach($specializations as $spec)
+                  <option value="{{ $spec->name }}" @selected(old('specialization')===$spec->name)>{{ $spec->name }}</option>
+                @endforeach
+              @endisset
+            </select>
+            @error('specialization')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">أرقام الهاتف</label>
+            <div id="phones-wrapper" class="space-y-2">
+              @php($oldPhones = old('phones', ['']))
+              @foreach($oldPhones as $idx => $phone)
+                <div class="flex gap-2">
+                  <input name="phones[{{ $idx }}]" type="text" value="{{ $phone }}" class="flex-1 w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+                  <button type="button" class="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl" onclick="this.parentElement.remove()">حذف</button>
+                </div>
+              @endforeach
+            </div>
+            <button type="button" id="add-phone" class="mt-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl">إضافة رقم</button>
+            @error('phones')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-gray-700 mb-2" style="font-size: 1.3rem;">روابط السوشيال</label>
+            <div id="socials-wrapper" class="space-y-2">
+              @php($oldSocials = old('social_links', [['platform'=>'','url'=>'']]))
+              @foreach($oldSocials as $idx => $social)
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <input name="social_links[{{ $idx }}][platform]" type="text" value="{{ $social['platform'] ?? '' }}" placeholder="المنصة (مثال: تويتر، لينكدإن)" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+                  <div class="flex gap-2">
+                    <input name="social_links[{{ $idx }}][url]" type="url" value="{{ $social['url'] ?? '' }}" placeholder="الرابط" class="flex-1 w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+                    <button type="button" class="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl" onclick="this.parentElement.parentElement.remove()">حذف</button>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+            <button type="button" id="add-social" class="mt-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl">إضافة رابط</button>
+            @error('social_links')<p class="text-red-600 mt-1" style="font-size: 1.3rem;">{{ $message }}</p>@enderror
+          </div>
+
           <div class="md:col-span-2 flex items-center gap-3 pt-2">
             <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl shadow hover:shadow-lg hover:from-indigo-700 hover:to-blue-700 transition" style="font-size: 1.3rem;">
               <i class="ti ti-device-floppy mr-2"></i>
@@ -98,4 +157,33 @@
 .animate-fade-in { animation: fadeIn 0.6s ease-out; }
 .animate-slide-up { animation: slideUp 0.8s ease-out; }
 </style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const phonesWrapper = document.getElementById('phones-wrapper');
+  const addPhoneBtn = document.getElementById('add-phone');
+  const socialsWrapper = document.getElementById('socials-wrapper');
+  const addSocialBtn = document.getElementById('add-social');
+
+  addPhoneBtn?.addEventListener('click', function() {
+    const idx = phonesWrapper.children.length;
+    const div = document.createElement('div');
+    div.className = 'flex gap-2';
+    div.innerHTML = `<input name="phones[${idx}]" type="text" class="flex-1 w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+                     <button type="button" class="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl" onclick="this.parentElement.remove()">حذف</button>`;
+    phonesWrapper.appendChild(div);
+  });
+
+  addSocialBtn?.addEventListener('click', function() {
+    const idx = socialsWrapper.children.length;
+    const container = document.createElement('div');
+    container.className = 'grid grid-cols-1 md:grid-cols-2 gap-2';
+    container.innerHTML = `<input name="social_links[${idx}][platform]" type="text" placeholder="المنصة (مثال: تويتر، لينكدإن)" class="w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+                           <div class="flex gap-2">
+                             <input name="social_links[${idx}][url]" type="url" placeholder="الرابط" class="flex-1 w-full border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500" style="font-size: 1.3rem;">
+                             <button type="button" class="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl" onclick="this.parentElement.parentElement.remove()">حذف</button>
+                           </div>`;
+    socialsWrapper.appendChild(container);
+  });
+});
+</script>
 @endsection

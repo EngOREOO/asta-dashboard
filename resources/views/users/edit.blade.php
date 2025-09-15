@@ -147,6 +147,36 @@
                   <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
+
+              <div>
+                <label for="department" class="block text-sm font-medium text-gray-700 mb-2">القسم</label>
+                <select id="department" name="department" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                  <option value="">اختر القسم</option>
+                  @isset($categories)
+                    @foreach($categories as $cat)
+                      <option value="{{ $cat->name }}" @selected(old('department', $user->department) === $cat->name)>{{ $cat->name }}</option>
+                    @endforeach
+                  @endisset
+                </select>
+                @error('department')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
+                <label for="specialization" class="block text-sm font-medium text-gray-700 mb-2">التخصص</label>
+                <select id="specialization" name="specialization" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                  <option value="">اختر التخصص</option>
+                  @isset($specializations)
+                    @foreach($specializations as $spec)
+                      <option value="{{ $spec->name }}" @selected(old('specialization', $user->specialization) === $spec->name)>{{ $spec->name }}</option>
+                    @endforeach
+                  @endisset
+                </select>
+                @error('specialization')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
             </div>
           </div>
 
@@ -205,6 +235,55 @@
             </div>
           </div>
           @endif
+
+          <!-- Phones and Social Links -->
+          <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+              <i class="ti ti-phone mr-2 text-emerald-500"></i>
+              وسائل التواصل
+            </h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">أرقام الهاتف</label>
+                <div id="phones-wrapper" class="space-y-2">
+                  @php($phones = old('phones', is_array($user->phones ?? null) ? $user->phones : ([])))
+                  @if(empty($phones))
+                    @php($phones = [''])
+                  @endif
+                  @foreach($phones as $idx => $phone)
+                    <div class="flex gap-2">
+                      <input name="phones[{{ $idx }}]" type="text" value="{{ $phone }}" class="flex-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                      <button type="button" class="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl" onclick="this.parentElement.remove()">حذف</button>
+                    </div>
+                  @endforeach
+                </div>
+                <button type="button" id="add-phone" class="mt-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl">إضافة رقم</button>
+                @error('phones')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">روابط السوشيال</label>
+                <div id="socials-wrapper" class="space-y-2">
+                  @php($socials = old('social_links', is_array($user->social_links ?? null) ? $user->social_links : ([])))
+                  @if(empty($socials))
+                    @php($socials = [['platform'=>'','url'=>'']])
+                  @endif
+                  @foreach($socials as $idx => $social)
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <input name="social_links[{{ $idx }}][platform]" type="text" value="{{ $social['platform'] ?? '' }}" placeholder="المنصة (مثال: تويتر، لينكدإن)" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                      <div class="flex gap-2">
+                        <input name="social_links[{{ $idx }}][url]" type="url" value="{{ $social['url'] ?? '' }}" placeholder="الرابط" class="flex-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                        <button type="button" class="px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl" onclick="this.parentElement.parentElement.remove()">حذف</button>
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+                <button type="button" id="add-social" class="mt-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl">إضافة رابط</button>
+                @error('social_links')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+              </div>
+            </div>
+          </div>
 
           <!-- Action Buttons -->
           <div class="flex items-center justify-end space-x-4 space-x-reverse pt-8 border-t border-gray-200">
@@ -331,4 +410,33 @@
     });
   });
 </script>
+
+// dynamic adders for phones and social links
+document.addEventListener('DOMContentLoaded', function() {
+  const phonesWrapper = document.getElementById('phones-wrapper');
+  const addPhoneBtn = document.getElementById('add-phone');
+  const socialsWrapper = document.getElementById('socials-wrapper');
+  const addSocialBtn = document.getElementById('add-social');
+
+  addPhoneBtn?.addEventListener('click', function() {
+    const idx = phonesWrapper.children.length;
+    const div = document.createElement('div');
+    div.className = 'flex gap-2';
+    div.innerHTML = `<input name="phones[${idx}]" type="text" class="flex-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                     <button type=\"button\" class=\"px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl\" onclick=\"this.parentElement.remove()\">حذف</button>`;
+    phonesWrapper.appendChild(div);
+  });
+
+  addSocialBtn?.addEventListener('click', function() {
+    const idx = socialsWrapper.children.length;
+    const container = document.createElement('div');
+    container.className = 'grid grid-cols-1 md:grid-cols-2 gap-2';
+    container.innerHTML = `<input name="social_links[${idx}][platform]" type="text" placeholder="المنصة (مثال: تويتر، لينكدإن)" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                           <div class=\"flex gap-2\">
+                             <input name=\"social_links[${idx}][url]\" type=\"url\" placeholder=\"الرابط\" class=\"flex-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent\" />
+                             <button type=\"button\" class=\"px-3 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl\" onclick=\"this.parentElement.parentElement.remove()\">حذف</button>
+                           </div>`;
+    socialsWrapper.appendChild(container);
+  });
+});
 @endsection

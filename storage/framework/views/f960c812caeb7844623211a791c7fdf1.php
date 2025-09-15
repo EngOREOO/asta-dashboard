@@ -3,7 +3,7 @@
 ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100" style="font-family: Arial, sans-serif;">
+<div class="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 font-arabic">
   <div class="space-y-8 p-6">
     
     <!-- Success/Error Notifications -->

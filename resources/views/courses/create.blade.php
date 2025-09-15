@@ -273,6 +273,24 @@
                 @enderror
               </div>
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <label for="specialization" class="block text-sm font-medium text-gray-700 mb-2">التخصص</label>
+                <select id="specialization" name="specialization" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm @error('specialization') border-red-300 @enderror">
+                  <option value="">اختر التخصص</option>
+                  @isset($specializations)
+                    @foreach($specializations as $spec)
+                      <option value="{{ $spec->name }}" @selected(old('specialization') === $spec->name)>{{ $spec->name }}</option>
+                    @endforeach
+                  @endisset
+                </select>
+                @error('specialization')
+                  <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+              <div></div>
+            </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
